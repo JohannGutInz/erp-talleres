@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  #root {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+@media print {
+  /* Hide the entire app shell during print */
+  #root { display: none !important; }
+
+  /* Show only the quote print preview */
+  .quote-print-preview {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 99999;
+    overflow: auto;
+  }
+
+  @page {
+    margin: 15mm 18mm;
+    size: letter;
+  }
+}
