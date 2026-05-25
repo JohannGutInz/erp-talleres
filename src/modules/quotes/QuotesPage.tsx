@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Plus, FileText, ChevronDown, Car, User, DollarSign, Calendar, Trash2, Search } from 'lucide-react'
+import { Plus, FileText, ChevronDown, Car, User, DollarSign, Calendar, Trash2, Search, ClipboardList } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import type { QuoteFormValues } from '@/types/quote.types'
+import type { Order, OrderService, OrderPart } from '@/types/order.types'
 import { formatCurrency } from '@/lib/utils'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -21,6 +22,63 @@ function calcTotal(data: QuoteFormValues) {
     data.partItems.reduce((s, p) => s + (p.quantity || 0) * (p.unitPrice || 0), 0)
   const disc = subtotal * ((data.discount || 0) / 100)
   return (subtotal - disc) * 1.16
+}
+
+function convertToOrder(quote: StoredQuote): void {
+  const { data, quoteNumber } = quote
+  try {
+    const list: Order[] = JSON.parse(localStorage.getItem('orders_list') ?? '[]')
+    const num = `OT-${String(list.length + 1).padStart(4, '0')}`
+    const now = new Date().toISOString()
+
+    const services: OrderService[] = data.laborItems.map((item, i) => ({
+      id: `os-${Date.now()}-${i}`,
+      serviceId: '',
+      name: item.service,
+      price: item.unitPrice,
+      quantity: item.hours || 1,
+    }))
+    const parts: OrderPart[] = data.partItems.map((item, i) => ({
+      id: `op-${Date.now()}-${i}`,
+      partId: '',
+      name: item.name,
+      sku: (item as { sku?: string }).sku ?? '',
+      price: item.unitPrice,
+      quantity: item.quantity,
+    }))
+    const totalLabor = services.reduce((s, l) => s + l.price * l.quantity, 0)
+    const totalParts = parts.reduce((s, l) => s + l.price * l.quantity, 0)
+
+    const order: Order = {
+      id: `ord-${Date.now()}`,
+      number: num,
+      clientId: data.clientId ?? '',
+      clientName: data.clientName,
+      vehicleId: data.vehicleId ?? '',
+      vehiclePlate: data.vehiclePlate,
+      vehicleModel: [data.vehicleBrand, data.vehicleModel, data.vehicleYear].filter(Boolean).join(' '),
+      status: 'Pendiente',
+      services,
+      parts,
+      totalLabor,
+      totalParts,
+      total: totalLabor + totalParts,
+      notes: data.problemDescription,
+      sourceQuoteNumber: quoteNumber,
+      createdAt: now,
+      updatedAt: now,
+    }
+    localStorage.setItem('orders_list', JSON.stringify([order, ...list]))
+
+    // Mark quote as "En proceso"
+    const quotes: StoredQuote[] = JSON.parse(localStorage.getItem('quotes_list') ?? '[]')
+    localStorage.setItem('quotes_list', JSON.stringify(
+      quotes.map((q) => q.quoteNumber === quoteNumber ? { ...q, data: { ...q.data, quoteStatus: 'En proceso' } } : q)
+    ))
+
+    window.dispatchEvent(new CustomEvent('order:created', { detail: order }))
+    window.dispatchEvent(new CustomEvent('quote:submitted'))
+  } catch { /* ignore */ }
 }
 
 function QuoteRow({ quote, onDelete }: { quote: StoredQuote; onDelete: () => void }) {
@@ -179,13 +237,29 @@ function QuoteRow({ quote, onDelete }: { quote: StoredQuote; onDelete: () => voi
                 <p className="text-base font-bold text-text-primary">{formatCurrency(total)}</p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onDelete() }}
-              className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
-            >
-              <Trash2 size={13} /> Eliminar
-            </button>
+            <div className="flex items-center gap-2">
+              {data.quoteStatus !== 'En proceso' && data.quoteStatus !== 'Concluida' && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); convertToOrder(quote); }}
+                  className="flex items-center gap-1.5 rounded-lg border border-brand/30 bg-brand-light px-3 py-2 text-xs font-medium text-brand hover:bg-brand hover:text-white transition-colors"
+                >
+                  <ClipboardList size={13} /> Convertir a OT
+                </button>
+              )}
+              {(data.quoteStatus === 'En proceso' || data.quoteStatus === 'Concluida') && (
+                <span className="flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-600">
+                  <ClipboardList size={13} /> Ya convertida a OT
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onDelete() }}
+                className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+              >
+                <Trash2 size={13} /> Eliminar
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -17,6 +17,7 @@ export interface Order {
   totalParts: number
   total: number
   notes?: string
+  sourceQuoteNumber?: string
   createdAt: string
   updatedAt: string
   completedAt?: string
