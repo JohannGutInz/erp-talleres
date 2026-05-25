@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, X } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -33,11 +34,33 @@ const COLUMNS: ColumnDef<Order, unknown>[] = [
 ]
 
 export default function OrdersPage() {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('')
+  const [orders, setOrders] = useState<Order[]>(() => {
+    try {
+      const stored: Order[] = JSON.parse(localStorage.getItem('orders_list') ?? '[]')
+      const mockIds = new Set(MOCK_ORDERS.map((o) => o.id))
+      return [...stored.filter((o) => !mockIds.has(o.id)), ...MOCK_ORDERS]
+    } catch { return MOCK_ORDERS }
+  })
 
-  const filtered = MOCK_ORDERS.filter((o) =>
-    statusFilter ? o.status === statusFilter : true
+  useEffect(() => {
+    const refresh = () => {
+      try {
+        const stored: Order[] = JSON.parse(localStorage.getItem('orders_list') ?? '[]')
+        const mockIds = new Set(MOCK_ORDERS.map((o) => o.id))
+        setOrders([...stored.filter((o) => !mockIds.has(o.id)), ...MOCK_ORDERS])
+      } catch { /* ignore */ }
+    }
+    window.addEventListener('order:created', refresh)
+    window.addEventListener('order:updated', refresh)
+    return () => { window.removeEventListener('order:created', refresh); window.removeEventListener('order:updated', refresh) }
+  }, [])
+
+  const filtered = orders.filter((o) =>
+    (statusFilter ? o.status === statusFilter : true) &&
+    (search ? o.clientName.toLowerCase().includes(search.toLowerCase()) || o.vehiclePlate.toLowerCase().includes(search.toLowerCase()) || o.number.toLowerCase().includes(search.toLowerCase()) : true)
   )
 
   return (
@@ -46,7 +69,8 @@ export default function OrdersPage() {
         title="Órdenes De Trabajo"
         description="Gestión de órdenes activas y completadas"
         actions={
-          <button className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+          <button onClick={() => navigate('/orders/new')}
+            className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
             <Plus size={15} />
             Nueva Orden
           </button>
@@ -74,7 +98,7 @@ export default function OrdersPage() {
           )}
         </div>
 
-        <DataTable data={filtered} columns={COLUMNS} globalFilter={search} />
+        <DataTable data={filtered} columns={COLUMNS} globalFilter={search} onRowClick={(row) => navigate(`/orders/${row.id}/edit`)} />
       </div>
     </div>
   )

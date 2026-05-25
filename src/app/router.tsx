@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 import LoginPage from '@/modules/auth/LoginPage'
 import DashboardPage      from '@/modules/dashboard/DashboardPage'
 import OrdersPage         from '@/modules/orders/OrdersPage'
+import NewOrderPage       from '@/modules/orders/NewOrderPage'
 import AppointmentsPage   from '@/modules/orders/AppointmentsPage'
 import QuotesPage         from '@/modules/quotes/QuotesPage'
 import NewQuotePage       from '@/modules/quotes/NewQuotePage'
@@ -37,6 +38,8 @@ export const router = createBrowserRouter([
         children: [
           { index: true,                                      element: <DashboardPage />         },
           { path: 'orders',                                   element: <OrdersPage />            },
+          { path: 'orders/new',                               element: <NewOrderPage />          },
+          { path: 'orders/:id/edit',                          element: <NewOrderPage />          },
           { path: 'appointments',                             element: <AppointmentsPage />      },
           { path: 'quotes',                                   element: <QuotesPage />            },
           { path: 'quotes/new',                               element: <NewQuotePage />          },
