@@ -87,18 +87,6 @@ export default function LoginPage() {
             ))}
           </div>
 
-          {/* Dashboard preview */}
-          <div className="relative">
-            <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-orange-500/20 to-orange-600/10 blur-2xl opacity-40" />
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?q=80&w=2400&auto=format&fit=crop"
-                alt="Dashboard"
-                className="w-full opacity-90"
-              />
-            </div>
-          </div>
-
         </div>
       </section>
 
