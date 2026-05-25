@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
-import LoginPage from '@/modules/auth/LoginPage'
 import DashboardPage      from '@/modules/dashboard/DashboardPage'
 import OrdersPage         from '@/modules/orders/OrdersPage'
 import NewOrderPage       from '@/modules/orders/NewOrderPage'
@@ -28,7 +27,6 @@ import NewPurchaseOrderPage from '@/modules/inventory/NewPurchaseOrderPage'
 import CreditsPage        from '@/modules/inventory/CreditsPage'
 
 export const router = createBrowserRouter([
-  { path: '/login', element: <LoginPage /> },
   {
     path: '/',
     element: <ProtectedRoute />,

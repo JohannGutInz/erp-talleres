@@ -1,7 +1,8 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth.store'
+import LoginPage from '@/modules/auth/LoginPage'
 
 export function ProtectedRoute() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />
+  return isAuthenticated ? <Outlet /> : <LoginPage />
 }
