@@ -50,10 +50,10 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0F0A05] via-[#0F0A05]/80 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F0A05] via-transparent to-transparent" />
 
-        <div className="relative z-10 flex flex-col justify-center px-16 py-20 max-w-2xl">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-16 py-20 max-w-2xl mx-auto">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-400/25 bg-orange-400/10 px-4 py-2 text-sm font-medium text-orange-300 w-fit mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-orange-400/25 bg-orange-400/10 px-4 py-2 text-sm font-medium text-orange-300 mb-8">
             <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
             Plataforma Inteligente para Talleres
           </div>
