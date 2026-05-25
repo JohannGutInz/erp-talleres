@@ -28,7 +28,7 @@ export function Topbar({ collapsed, onToggle }: TopbarProps) {
 
   function handleLogout() {
     logout()
-    navigate('/login')
+    navigate('/')
   }
 
   return (
