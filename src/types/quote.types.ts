@@ -17,7 +17,7 @@ const optionalNumber = (min = 0) =>
         ? undefined
         : Number(v),
     z.number().min(min).optional()
-  )
+  ) as z.ZodType<number | undefined>
 
 const laborItemSchema = z.object({
   id: z.string(),
@@ -52,7 +52,7 @@ export const quoteFormSchema = z
     vehicleVin: z.string().optional(),
     vehicleBrand: z.string().min(1, 'Marca requerida'),
     vehicleModel: z.string().min(1, 'Modelo requerido'),
-    vehicleYear: z.number({ invalid_type_error: 'Año requerido' }).min(1950).max(2030),
+    vehicleYear: z.number({ error: 'Año requerido' }).min(1950).max(2030),
     vehicleKm: optionalNumber(),
     vehicleColor: z.string().optional(),
     vehicleEngine: z.string().optional(),

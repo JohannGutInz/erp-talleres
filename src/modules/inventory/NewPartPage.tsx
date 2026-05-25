@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Package, ArrowRight, Pencil, Plus, Search, X, DollarSign, MapPin, Truck } from 'lucide-react'
@@ -14,7 +14,19 @@ const num = (min = 0) =>
   z.preprocess(
     (v) => (v === '' || v === null || v === undefined || (typeof v === 'number' && isNaN(v as number)) ? undefined : Number(v)),
     z.number().min(min).optional()
-  )
+  ) as z.ZodType<number | undefined>
+
+const reqNum = (min = 0, msg?: string) =>
+  z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? undefined : Number(v)),
+    z.number({ error: msg ?? 'Requerido' }).min(min, msg ?? 'Requerido')
+  ) as z.ZodType<number>
+
+const defNum = (def = 0) =>
+  z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? def : Number(v)),
+    z.number().min(0)
+  ) as z.ZodType<number>
 
 const partFormSchema = z.object({
   sku:          z.string().min(1, 'SKU requerido'),
@@ -24,10 +36,10 @@ const partFormSchema = z.object({
   brand:        z.string().optional(),
   supplierId:   z.string().optional(),
   supplierName: z.string().optional(),
-  cost:         z.preprocess((v) => (v === '' || v === null ? undefined : Number(v)), z.number().min(0, 'Costo requerido')),
-  price:        z.preprocess((v) => (v === '' || v === null ? undefined : Number(v)), z.number().min(0, 'Precio requerido')),
-  stock:        z.preprocess((v) => (v === '' || v === null ? 0 : Number(v)), z.number().min(0)),
-  minStock:     z.preprocess((v) => (v === '' || v === null ? 0 : Number(v)), z.number().min(0)),
+  cost:         reqNum(0, 'Costo requerido'),
+  price:        reqNum(0, 'Precio requerido'),
+  stock:        defNum(0),
+  minStock:     defNum(0),
   unit:         z.string().optional(),
   location:     z.string().optional(),
 })
@@ -62,7 +74,7 @@ export default function NewPartPage() {
   }, [id])
 
   const { register, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<PartFormValues>({
-    resolver: zodResolver(partFormSchema),
+    resolver: zodResolver(partFormSchema) as Resolver<PartFormValues>,
     defaultValues: stored ?? { sku: '', name: '', description: '', category: '', brand: '', supplierId: '', supplierName: '', cost: undefined, price: undefined, stock: 0, minStock: 0, unit: 'pieza', location: '' },
   })
 

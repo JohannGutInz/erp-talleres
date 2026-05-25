@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FileText, Car, User, DollarSign, Printer, CheckCircle } from 'lucide-react'
 import type { Client, Vehicle } from '@/types/client.types'
@@ -46,7 +46,7 @@ export default function NewQuotePage() {
   const quoteNumber = useRef(`COT-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`)
 
   const methods = useForm<QuoteFormValues>({
-    resolver: zodResolver(quoteFormSchema),
+    resolver: zodResolver(quoteFormSchema) as Resolver<QuoteFormValues>,
     defaultValues,
   })
 

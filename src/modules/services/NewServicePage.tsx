@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm, FormProvider, useFieldArray, useFormContext } from 'react-hook-form'
+import { useForm, FormProvider, useFieldArray, useFormContext, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Scissors, ArrowRight, Pencil, Search, X, Plus, Trash2, Package, StickyNote, ToggleLeft, ToggleRight, Clock, DollarSign } from 'lucide-react'
 import { type ServiceFormValues, serviceFormSchema, SERVICE_CATEGORIES, type StoredService } from '@/types/service.types'
@@ -154,7 +154,7 @@ export default function NewServicePage() {
   }, [id])
 
   const methods = useForm<ServiceFormValues>({
-    resolver: zodResolver(serviceFormSchema),
+    resolver: zodResolver(serviceFormSchema) as Resolver<ServiceFormValues>,
     defaultValues: stored ?? {
       name: '', category: '', description: '', basePrice: undefined,
       estimatedHours: undefined, requiredParts: [], active: true, notes: '',

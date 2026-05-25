@@ -60,7 +60,7 @@ export function SectionVehicle({ foundClient, vehicleMode, selectedVehicleId, on
   const isDuplicateVin =
     vehicleMode === 'new' &&
     (vinValue?.length ?? 0) >= 5 &&
-    allVehicles.some((v) => v.vin && v.vin.toLowerCase() === vinValue.toLowerCase() && v.id !== selectedVehicleId)
+    allVehicles.some((v) => v.vin && v.vin.toLowerCase() === (vinValue ?? '').toLowerCase() && v.id !== selectedVehicleId)
 
   function handleVehicleSelect(v: Vehicle) {
     setValue('vehicleId', v.id)

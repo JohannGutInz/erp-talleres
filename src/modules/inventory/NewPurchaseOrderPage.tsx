@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ShoppingCart, ArrowRight, Pencil, Plus, Search, X, Truck, Trash2, Package, Calendar } from 'lucide-react'
@@ -70,7 +70,7 @@ export default function NewPurchaseOrderPage() {
   }, [id])
 
   const { register, watch, setValue, handleSubmit, control, formState: { isSubmitting, errors } } = useForm<POFormValues>({
-    resolver: zodResolver(poFormSchema),
+    resolver: zodResolver(poFormSchema) as Resolver<POFormValues>,
     defaultValues: stored ?? { supplierId: '', supplierName: '', items: [], notes: '', expectedDate: '' },
   })
 

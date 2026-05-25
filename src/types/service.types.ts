@@ -21,7 +21,7 @@ const optNum = (min = 0) =>
   z.preprocess(
     (v) => (v === '' || v === null || v === undefined || (typeof v === 'number' && isNaN(v as number)) ? undefined : Number(v)),
     z.number().min(min).optional()
-  )
+  ) as z.ZodType<number | undefined>
 
 export const requiredPartSchema = z.object({
   partId:   z.string(),
@@ -36,8 +36,8 @@ export const serviceFormSchema = z.object({
   description:    z.string().optional(),
   basePrice:      z.preprocess(
     (v) => (v === '' || v === null || v === undefined ? undefined : Number(v)),
-    z.number({ invalid_type_error: 'Precio requerido' }).min(0, 'Precio inválido')
-  ),
+    z.number({ error: 'Precio requerido' }).min(0, 'Precio inválido')
+  ) as z.ZodType<number>,
   estimatedHours: optNum(),
   requiredParts:  z.array(requiredPartSchema).default([]),
   active:         z.boolean().default(true),

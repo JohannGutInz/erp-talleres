@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserPlus, ArrowRight, Users, Pencil } from 'lucide-react'
 import { type ClientFormValues, clientFormSchema } from '@/types/client-form.types'
@@ -59,7 +59,7 @@ export default function NewClientPage() {
   }, [id])
 
   const methods = useForm<ClientFormValues>({
-    resolver: zodResolver(clientFormSchema),
+    resolver: zodResolver(clientFormSchema) as Resolver<ClientFormValues>,
     defaultValues: storedClient ?? EMPTY_DEFAULTS,
   })
 

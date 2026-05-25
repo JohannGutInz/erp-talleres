@@ -4,7 +4,7 @@ const optNum = (min = 0) =>
   z.preprocess(
     (v) => (v === '' || v === null || v === undefined || (typeof v === 'number' && isNaN(v as number)) ? undefined : Number(v)),
     z.number().min(min).optional()
-  )
+  ) as z.ZodType<number | undefined>
 
 export const vehicleEntrySchema = z.object({
   id: z.string(),

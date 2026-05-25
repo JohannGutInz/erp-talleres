@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Truck, ArrowRight, Pencil, Plus, User, FileText, Clock } from 'lucide-react'
@@ -17,7 +17,7 @@ const supplierFormSchema = z.object({
   rfc:         z.string().optional(),
   address:     z.string().optional(),
   city:        z.string().optional(),
-  creditDays:  z.preprocess((v) => (v === '' || v === null ? undefined : Number(v)), z.number().min(0).optional()),
+  creditDays:  z.preprocess((v) => (v === '' || v === null ? undefined : Number(v)), z.number().min(0).optional()) as z.ZodType<number | undefined>,
   notes:       z.string().optional(),
 })
 
@@ -44,7 +44,7 @@ export default function NewSupplierPage() {
   }, [id])
 
   const { register, watch, setValue, handleSubmit, formState: { isSubmitting, errors } } = useForm<SupplierFormValues>({
-    resolver: zodResolver(supplierFormSchema),
+    resolver: zodResolver(supplierFormSchema) as Resolver<SupplierFormValues>,
     defaultValues: stored ?? { name: '', contact: '', phone: '', email: '', rfc: '', address: '', city: '', creditDays: 30, notes: '' },
   })
 
