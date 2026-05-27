@@ -1,4 +1,17 @@
-# Logs
+# ── Dependencias ──────────────────────────────────────
+node_modules
+
+# ── Build output ──────────────────────────────────────
+dist
+dist-ssr
+
+# ── Entornos y secretos ───────────────────────────────
+*.local
+.env
+.env.*
+!.env.example
+
+# ── Logs ──────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,18 +20,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ── Documentación / diagramas (no van a producción) ───
+*.drawio
+*.drawio.png
+*.drawio.svg
+data-model.json
 
-# Editor directories and files
+# ── Archivos del sistema operativo ────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Editores ──────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ── Vercel local ──────────────────────────────────────
+.vercel

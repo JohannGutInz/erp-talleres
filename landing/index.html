@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tallERP — El ERP diseñado para talleres automotrices</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#F97316', dark: '#EA580C', light: '#FFF7ED', xlight: '#FEF3E7' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          animation: {
+            'fade-up':   'fadeUp 0.6s ease forwards',
+            'fade-in':   'fadeIn 0.5s ease forwards',
+            'float':     'float 4s ease-in-out infinite',
+            'pulse-slow':'pulse 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp:  { '0%': { opacity:'0', transform:'translateY(24px)' }, '100%': { opacity:'1', transform:'translateY(0)' } },
+            fadeIn:  { '0%': { opacity:'0' }, '100%': { opacity:'1' } },
+            float:   { '0%,100%': { transform:'translateY(0)' }, '50%': { transform:'translateY(-10px)' } },
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    .gradient-text { background: linear-gradient(135deg, #F97316 0%, #FB923C 40%, #FDBA74 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-glow { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(249,115,22,0.3) 0%, transparent 70%); }
+    .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+    .stagger-1 { transition-delay: 0.05s; } .stagger-2 { transition-delay: 0.1s; }
+    .stagger-3 { transition-delay: 0.15s; } .stagger-4 { transition-delay: 0.2s; }
+    .stagger-5 { transition-delay: 0.25s; } .stagger-6 { transition-delay: 0.3s; }
+    .pricing-toggle input:checked + label { background: #F97316; color: white; }
+    .nav-scrolled { background: rgba(255,255,255,0.95) !important; backdrop-filter: blur(12px); box-shadow: 0 1px 20px rgba(0,0,0,0.08); }
+    .mockup-screen { background: #0F172A; border-radius: 12px; padding: 2px; box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .mockup-bar { background: #1E293B; border-radius: 10px 10px 0 0; padding: 10px 16px; display: flex; align-items: center; gap: 6px; }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+    .faq-answer.open { max-height: 300px; padding-top: 12px; }
+    .tab-btn.active { border-color: #F97316; color: #F97316; background: #FFF7ED; }
+    .module-panel { display: none; } .module-panel.active { display: block; }
+    @keyframes counter { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+    .counter-val { animation: counter 0.5s ease forwards; }
+  </style>
+</head>
+<body class="font-sans antialiased bg-white text-gray-900">
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- NAV                                                  -->
+<!-- ──────────────────────────────────────────────────── -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <span class="font-bold text-lg text-white" id="nav-logo">tall<span class="text-brand">ERP</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#features" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Funciones</a>
+      <a href="#modules" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Módulos</a>
+      <a href="#pricing" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Precios</a>
+      <a href="#faq" class="text-sm font-medium text-white/80 hover:text-white transition-colors">FAQ</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="#" class="hidden md:block text-sm font-medium text-white/80 hover:text-white transition-colors">Iniciar sesión</a>
+      <a href="#pricing" class="bg-brand hover:bg-brand-dark text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-lg shadow-brand/30">
+        Comenzar gratis →
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- HERO                                                 -->
+<!-- ──────────────────────────────────────────────────── -->
+<section class="relative min-h-screen bg-[#0A0A0F] overflow-hidden flex flex-col">
+  <div class="hero-glow absolute inset-0 pointer-events-none"></div>
+  <!-- Grid background -->
+  <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+  <div class="relative flex-1 flex flex-col items-center justify-center pt-28 pb-16 px-6 text-center">
+    <!-- Badge -->
+    <div class="animate-on-scroll inline-flex items-center gap-2 bg-brand/10 border border-brand/30 text-brand text-xs font-semibold px-4 py-1.5 rounded-full mb-8">
+      <span class="w-1.5 h-1.5 bg-brand rounded-full animate-pulse-slow"></span>
+      Diseñado para talleres automotrices en México
+    </div>
+
+    <!-- Headline -->
+    <h1 class="animate-on-scroll stagger-1 text-5xl md:text-7xl font-black text-white leading-[1.05] tracking-tight max-w-4xl mb-6">
+      Gestiona tu taller
+      <br/><span class="gradient-text">con inteligencia</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="animate-on-scroll stagger-2 text-lg md:text-xl text-white/60 max-w-2xl mb-10 leading-relaxed">
+      Órdenes de trabajo, presupuestos, inventario y facturación CFDI — todo en una sola plataforma. Diseñado para el taller mexicano moderno.
+    </p>
+
+    <!-- CTAs -->
+    <div class="animate-on-scroll stagger-3 flex flex-col sm:flex-row items-center gap-4 mb-16">
+      <a href="#pricing" class="bg-brand hover:bg-brand-dark text-white font-bold px-8 py-4 rounded-xl text-base transition-all shadow-2xl shadow-brand/40 hover:shadow-brand/60 hover:-translate-y-0.5">
+        Comenzar prueba gratuita
+      </a>
+      <a href="#demo" class="flex items-center gap-2 text-white/70 hover:text-white font-medium px-6 py-4 rounded-xl border border-white/10 hover:border-white/25 transition-all text-base">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        Ver demo
+      </a>
+    </div>
+
+    <!-- Browser Mockup -->
+    <div class="animate-on-scroll stagger-4 w-full max-w-5xl mx-auto animate-float">
+      <div class="mockup-screen">
+        <div class="mockup-bar">
+          <div class="mockup-dot bg-red-500"></div>
+          <div class="mockup-dot bg-yellow-500"></div>
+          <div class="mockup-dot bg-green-500"></div>
+          <div class="flex-1 ml-4 bg-[#0F172A] rounded-md px-3 py-1">
+            <span class="text-xs text-slate-500">app.tallerp.mx</span>
+          </div>
+        </div>
+        <!-- Dashboard UI mockup -->
+        <div class="bg-[#F8FAFC] rounded-b-[10px] overflow-hidden">
+          <!-- Mini topbar -->
+          <div class="bg-white border-b border-gray-100 px-4 py-2.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-5 h-5 bg-brand/20 rounded"></div>
+              <div class="w-24 h-2.5 bg-gray-200 rounded-full"></div>
+            </div>
+            <div class="flex gap-2">
+              <div class="w-20 h-6 bg-brand rounded-md"></div>
+            </div>
+          </div>
+          <div class="flex">
+            <!-- Sidebar -->
+            <div class="w-44 bg-white border-r border-gray-100 p-3 hidden sm:block">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 bg-brand/10 rounded-lg px-2.5 py-2">
+                  <div class="w-3 h-3 bg-brand rounded-sm"></div>
+                  <div class="w-16 h-2 bg-brand/60 rounded-full"></div>
+                </div>
+                <div class="flex items-center gap-2 px-2.5 py-2">
+                  <div class="w-3 h-3 bg-gray-200 rounded-sm"></div>
+                  <div class="w-14 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="flex items-center gap-2 px-2.5 py-2">
+                  <div class="w-3 h-3 bg-gray-200 rounded-sm"></div>
+                  <div class="w-18 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="flex items-center gap-2 px-2.5 py-2">
+                  <div class="w-3 h-3 bg-gray-200 rounded-sm"></div>
+                  <div class="w-12 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="flex items-center gap-2 px-2.5 py-2">
+                  <div class="w-3 h-3 bg-gray-200 rounded-sm"></div>
+                  <div class="w-16 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Main content -->
+            <div class="flex-1 p-4">
+              <!-- KPI cards -->
+              <div class="grid grid-cols-4 gap-3 mb-4">
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                  <div class="w-6 h-6 bg-brand/10 rounded-lg mb-2"></div>
+                  <div class="w-10 h-4 bg-gray-800 rounded mb-1"></div>
+                  <div class="w-16 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                  <div class="w-6 h-6 bg-green-100 rounded-lg mb-2"></div>
+                  <div class="w-14 h-4 bg-gray-800 rounded mb-1"></div>
+                  <div class="w-16 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm hidden md:block">
+                  <div class="w-6 h-6 bg-blue-100 rounded-lg mb-2"></div>
+                  <div class="w-8 h-4 bg-gray-800 rounded mb-1"></div>
+                  <div class="w-16 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm hidden md:block">
+                  <div class="w-6 h-6 bg-purple-100 rounded-lg mb-2"></div>
+                  <div class="w-12 h-4 bg-gray-800 rounded mb-1"></div>
+                  <div class="w-16 h-2 bg-gray-200 rounded-full"></div>
+                </div>
+              </div>
+              <!-- Chart + table row -->
+              <div class="grid grid-cols-5 gap-3">
+                <div class="col-span-3 bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                  <div class="w-24 h-2.5 bg-gray-200 rounded-full mb-3"></div>
+                  <!-- Fake bar chart -->
+                  <div class="flex items-end gap-1.5 h-20">
+                    <div class="flex-1 bg-brand/20 rounded-t" style="height:40%"></div>
+                    <div class="flex-1 bg-brand/20 rounded-t" style="height:60%"></div>
+                    <div class="flex-1 bg-brand/30 rounded-t" style="height:45%"></div>
+                    <div class="flex-1 bg-brand/20 rounded-t" style="height:75%"></div>
+                    <div class="flex-1 bg-brand rounded-t" style="height:90%"></div>
+                    <div class="flex-1 bg-brand/40 rounded-t" style="height:65%"></div>
+                  </div>
+                </div>
+                <div class="col-span-2 bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                  <div class="w-16 h-2.5 bg-gray-200 rounded-full mb-3"></div>
+                  <!-- Fake donut -->
+                  <div class="flex items-center justify-center h-20">
+                    <svg width="72" height="72" viewBox="0 0 72 72">
+                      <circle cx="36" cy="36" r="28" fill="none" stroke="#E2E8F0" stroke-width="10"/>
+                      <circle cx="36" cy="36" r="28" fill="none" stroke="#F97316" stroke-width="10" stroke-dasharray="88 88" stroke-dashoffset="22" transform="rotate(-90 36 36)"/>
+                      <circle cx="36" cy="36" r="28" fill="none" stroke="#3B82F6" stroke-width="10" stroke-dasharray="44 132" stroke-dashoffset="-66" transform="rotate(-90 36 36)"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="relative border-t border-white/5 bg-white/5 backdrop-blur-sm py-8">
+    <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-3xl font-black text-white mb-1"><span class="stat">500</span>+</div>
+        <div class="text-sm text-white/50">Talleres activos</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-white mb-1"><span class="stat">12</span>K+</div>
+        <div class="text-sm text-white/50">Órdenes procesadas</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-white mb-1"><span class="stat">98</span>%</div>
+        <div class="text-sm text-white/50">Satisfacción de clientes</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-white mb-1"><span class="stat">4</span>h</div>
+        <div class="text-sm text-white/50">Soporte de respuesta</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- PROBLEMA → SOLUCIÓN                                  -->
+<!-- ──────────────────────────────────────────────────── -->
+<section class="py-24 bg-white">
+  <div class="max-w-5xl mx-auto px-6 text-center">
+    <div class="animate-on-scroll inline-flex items-center gap-2 bg-red-50 text-red-500 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+      ¿Te identificas?
+    </div>
+    <h2 class="animate-on-scroll stagger-1 text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+      ¿Sigues administrando<br/>tu taller con <span class="line-through text-gray-300">papel</span> y <span class="line-through text-gray-300">Excel</span>?
+    </h2>
+    <p class="animate-on-scroll stagger-2 text-lg text-gray-500 max-w-2xl mx-auto mb-16">
+      Cada minuto perdido buscando una orden, calculando inventario o emitiendo una factura es dinero que se escapa de tu taller.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="animate-on-scroll stagger-1 bg-red-50 border border-red-100 rounded-2xl p-6 text-left card-hover">
+        <div class="text-3xl mb-4">😤</div>
+        <h3 class="font-bold text-gray-900 mb-2">Órdenes perdidas o confusas</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Papeles por todos lados, mecánicos sin instrucciones claras, clientes preguntando cuándo estará listo su carro.</p>
+      </div>
+      <div class="animate-on-scroll stagger-2 bg-red-50 border border-red-100 rounded-2xl p-6 text-left card-hover">
+        <div class="text-3xl mb-4">📦</div>
+        <h3 class="font-bold text-gray-900 mb-2">Inventario sin control</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">No sabes qué refacciones tienes, compras de más o te quedas sin piezas clave en el peor momento.</p>
+      </div>
+      <div class="animate-on-scroll stagger-3 bg-red-50 border border-red-100 rounded-2xl p-6 text-left card-hover">
+        <div class="text-3xl mb-4">🧾</div>
+        <h3 class="font-bold text-gray-900 mb-2">Facturación manual y lenta</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Emitir un CFDI te toma 20 minutos, los errores son constantes y los clientes se quejan del tiempo de espera.</p>
+      </div>
+    </div>
+
+    <div class="mt-12 animate-on-scroll">
+      <div class="inline-flex items-center gap-3 bg-brand text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl shadow-brand/30">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        tallERP resuelve todo esto
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- FEATURES                                            -->
+<!-- ──────────────────────────────────────────────────── -->
+<section id="features" class="py-24 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <div class="animate-on-scroll inline-flex items-center gap-2 bg-brand-light border border-brand/20 text-brand text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+        Todo lo que tu taller necesita
+      </div>
+      <h2 class="animate-on-scroll stagger-1 text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+        Una plataforma.<br/>Todo el control.
+      </h2>
+      <p class="animate-on-scroll stagger-2 text-lg text-gray-500 max-w-xl mx-auto">
+        Diseñada específicamente para talleres automotrices mexicanos. Sin funciones innecesarias, solo lo que realmente usas.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Feature 1 -->
+      <div class="animate-on-scroll stagger-1 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover group">
+        <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-brand/20 transition-colors">
+          <svg class="text-brand" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Órdenes de trabajo digitales</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Crea, asigna y da seguimiento a órdenes en segundos. Tus mecánicos siempre saben qué hacer y el cliente recibe actualizaciones en tiempo real.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Asignación de técnicos</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Historial completo</span>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="animate-on-scroll stagger-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover group">
+        <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
+          <svg class="text-green-600" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Presupuestos profesionales</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Genera cotizaciones detalladas con mano de obra y refacciones. Conviértelas en órdenes de trabajo con un solo clic cuando el cliente aprueba.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Cotiza en minutos</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Conversión directa a OT</span>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="animate-on-scroll stagger-3 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover group">
+        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+          <svg class="text-blue-600" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><polyline points="16 21 16 7"/><polyline points="8 21 8 7"/><path d="M2 12h20"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Control de inventario</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Stock en tiempo real, alertas de mínimos, movimientos automáticos al cerrar órdenes y órdenes de compra integradas con tus proveedores.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Alertas de stock bajo</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Movimientos automáticos</span>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="animate-on-scroll stagger-4 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover group">
+        <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
+          <svg class="text-purple-600" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Facturación CFDI</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Emite facturas electrónicas directamente desde la orden de trabajo. Compatible con los regímenes del SAT más comunes para el sector automotriz.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Timbrado al instante</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Regímenes SAT</span>
+        </div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="animate-on-scroll stagger-5 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm card-hover group">
+        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
+          <svg class="text-amber-600" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">CRM de clientes y vehículos</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Expediente digital completo de cada cliente y su flota vehicular. Historial de servicios, recordatorios de mantenimiento y seguimiento posventa.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Ficha del vehículo</span>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Recordatorios automáticos</span>
+        </div>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="animate-on-scroll stagger-6 bg-brand rounded-2xl p-6 shadow-sm card-hover group relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <svg class="text-white" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3 class="font-bold text-white text-lg mb-2">Dashboard con KPIs reales</h3>
+        <p class="text-sm text-white/80 leading-relaxed">Visualiza ingresos, órdenes activas, alertas de inventario y tendencias de negocio. Toma decisiones basadas en datos, no en suposiciones.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-xs bg-white/20 text-white px-2.5 py-1 rounded-full">Gráficas en tiempo real</span>
+          <span class="text-xs bg-white/20 text-white px-2.5 py-1 rounded-full">Alertas automáticas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- MÓDULOS (TABS)                                       -->
+<!-- ──────────────────────────────────────────────────── -->
+<section id="modules" class="py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="animate-on-scroll text-4xl font-extrabold text-gray-900 mb-4">Módulos completos</h2>
+      <p class="animate-on-scroll stagger-1 text-lg text-gray-500">Cada área de tu taller cubierta, integrada y sincronizada.</p>
+    </div>
+
+    <!-- Tab buttons -->
+    <div class="animate-on-scroll flex flex-wrap justify-center gap-2 mb-10">
+      <button onclick="switchTab('atencion')" id="tab-atencion" class="tab-btn active text-sm font-semibold px-5 py-2.5 rounded-xl border-2 border-transparent text-gray-600 transition-all">Atención al cliente</button>
+      <button onclick="switchTab('finanzas')" id="tab-finanzas" class="tab-btn text-sm font-semibold px-5 py-2.5 rounded-xl border-2 border-transparent text-gray-600 transition-all">Finanzas</button>
+      <button onclick="switchTab('compras')" id="tab-compras" class="tab-btn text-sm font-semibold px-5 py-2.5 rounded-xl border-2 border-transparent text-gray-600 transition-all">Compras e inventario</button>
+    </div>
+
+    <!-- Tab panels -->
+    <div id="panel-atencion" class="module-panel active">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="space-y-4">
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center shrink-0 text-brand font-bold text-sm">OT</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Órdenes de Trabajo</h4><p class="text-sm text-gray-500">Crea, asigna y cierra órdenes. Seguimiento en tiempo real del estatus de cada vehículo en el taller.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center shrink-0 text-brand font-bold text-sm">📅</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Agenda de Citas</h4><p class="text-sm text-gray-500">Calendario visual con vista mensual, semanal y diaria. Evita cuellos de botella y gestiona la carga de trabajo.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center shrink-0 text-brand font-bold text-sm">💬</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Presupuestos</h4><p class="text-sm text-gray-500">Diagnóstico completo, detalle de mano de obra y refacciones. Conversión automática a orden de trabajo.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center shrink-0 text-brand font-bold text-sm">👤</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Clientes y Vehículos</h4><p class="text-sm text-gray-500">Expediente digital con historial completo, datos de facturación y ficha técnica de cada vehículo.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-brand-light to-orange-50 rounded-2xl p-6 border border-brand/10">
+          <div class="bg-white rounded-xl shadow-sm p-4 mb-3">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold text-gray-800">OT-0042 — Toyota Corolla</div>
+              <span class="text-xs bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-full font-medium">En progreso</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-gray-500"><span>Cambio de aceite y filtros</span><span class="font-medium text-gray-700">$450</span></div>
+              <div class="flex justify-between text-xs text-gray-500"><span>Revisión de frenos</span><span class="font-medium text-gray-700">$280</span></div>
+              <div class="flex justify-between text-xs text-gray-500"><span>Filtro de aceite</span><span class="font-medium text-gray-700">$120</span></div>
+            </div>
+            <div class="border-t border-gray-100 mt-3 pt-3 flex justify-between">
+              <span class="text-sm font-bold text-gray-900">Total</span>
+              <span class="text-sm font-bold text-brand">$850.00</span>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <div class="flex-1 bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xs text-gray-500 mb-1">Técnico asignado</div>
+              <div class="text-sm font-medium text-gray-800">Carlos Méndez</div>
+            </div>
+            <div class="flex-1 bg-white rounded-lg p-3 border border-gray-100">
+              <div class="text-xs text-gray-500 mb-1">Promesa entrega</div>
+              <div class="text-sm font-medium text-gray-800">Hoy 18:00 hrs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-finanzas" class="module-panel">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="space-y-4">
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center shrink-0 text-purple-600 font-bold text-sm">$</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Recibos de pago</h4><p class="text-sm text-gray-500">Registra pagos en efectivo, tarjeta o transferencia. Historial completo de cobros por orden.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center shrink-0 text-purple-600 font-bold text-sm">CF</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Facturación CFDI</h4><p class="text-sm text-gray-500">Timbrado SAT desde la orden de trabajo. Solo requiere que el cliente tenga RFC registrado.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center shrink-0 text-purple-600 font-bold text-sm">%</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Comisiones</h4><p class="text-sm text-gray-500">Calcula automáticamente las comisiones de tus mecánicos y asesores por cada servicio cerrado.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center shrink-0 text-purple-600 font-bold text-sm">📊</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Libro de ventas</h4><p class="text-sm text-gray-500">Reporte consolidado de todas las operaciones del período, listo para exportar a tu contador.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-6 border border-purple-100">
+          <div class="text-sm font-semibold text-gray-700 mb-4">Ingresos — Mayo 2025</div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-white rounded-xl p-3 border border-gray-100">
+              <div class="text-xs text-gray-500 mb-1">Mano de obra</div>
+              <div class="text-lg font-bold text-gray-900">$38,400</div>
+              <div class="text-xs text-green-600 mt-0.5">↑ 12% vs. abril</div>
+            </div>
+            <div class="bg-white rounded-xl p-3 border border-gray-100">
+              <div class="text-xs text-gray-500 mb-1">Refacciones</div>
+              <div class="text-lg font-bold text-gray-900">$24,150</div>
+              <div class="text-xs text-green-600 mt-0.5">↑ 8% vs. abril</div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-3 border border-gray-100">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">Facturas emitidas</span>
+              <span class="font-semibold text-gray-900">47 CFDIs</span>
+            </div>
+            <div class="flex justify-between text-sm mt-1">
+              <span class="text-gray-600">Total del mes</span>
+              <span class="font-bold text-brand">$62,550.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-compras" class="module-panel">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="space-y-4">
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0 text-red-500 font-bold text-sm">🔩</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Catálogo de repuestos</h4><p class="text-sm text-gray-500">SKU, precio de compra y venta, stock mínimo, proveedor y ubicación en almacén para cada pieza.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0 text-red-500 font-bold text-sm">🏭</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Proveedores</h4><p class="text-sm text-gray-500">Directorio de proveedores con saldo pendiente, días de crédito y contacto directo.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0 text-red-500 font-bold text-sm">🛒</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Órdenes de compra</h4><p class="text-sm text-gray-500">Genera OCs, da seguimiento a la recepción parcial y controla los abonos realizados al proveedor.</p></div>
+            </div>
+            <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0 text-red-500 font-bold text-sm">📈</div>
+              <div><h4 class="font-semibold text-gray-900 mb-0.5">Movimientos de stock</h4><p class="text-sm text-gray-500">Auditoría completa de entradas, salidas y ajustes. Trazabilidad total de cada movimiento de inventario.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100">
+          <div class="text-sm font-semibold text-gray-700 mb-4">Alertas de inventario</div>
+          <div class="space-y-3">
+            <div class="bg-white rounded-xl p-3 border border-red-100 flex items-center gap-3">
+              <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+                <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs font-medium text-gray-800">Filtro de aceite FRAM PH43</div>
+                <div class="text-xs text-red-500">Stock: 2 — Mín: 10</div>
+              </div>
+              <button class="text-xs bg-brand text-white px-3 py-1 rounded-lg font-medium">Pedir</button>
+            </div>
+            <div class="bg-white rounded-xl p-3 border border-amber-100 flex items-center gap-3">
+              <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
+                <svg width="14" height="14" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs font-medium text-gray-800">Pastillas de freno Bosch</div>
+                <div class="text-xs text-amber-500">Stock: 4 — Mín: 6</div>
+              </div>
+              <button class="text-xs bg-brand text-white px-3 py-1 rounded-lg font-medium">Pedir</button>
+            </div>
+            <div class="bg-white rounded-xl p-3 border border-gray-100 flex items-center gap-3">
+              <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+                <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs font-medium text-gray-800">Aceite Castrol 5W-30 4L</div>
+                <div class="text-xs text-green-600">Stock: 24 — OK</div>
+              </div>
+              <span class="text-xs text-green-600 font-medium">✓ Ok</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- CÓMO FUNCIONA                                        -->
+<!-- ──────────────────────────────────────────────────── -->
+<section class="py-24 bg-gray-950 text-white relative overflow-hidden">
+  <div class="hero-glow absolute inset-0 pointer-events-none opacity-50"></div>
+  <div class="relative max-w-5xl mx-auto px-6 text-center">
+    <h2 class="animate-on-scroll text-4xl font-extrabold mb-4">Empieza en minutos</h2>
+    <p class="animate-on-scroll stagger-1 text-lg text-white/60 mb-16 max-w-xl mx-auto">Sin instalaciones, sin configuraciones complicadas, sin IT. Tu taller digital en 3 pasos.</p>
+
+    <div class="grid md:grid-cols-3 gap-8 relative">
+      <!-- Line connector -->
+      <div class="hidden md:block absolute top-8 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-brand/30 via-brand to-brand/30"></div>
+
+      <div class="animate-on-scroll stagger-1 relative">
+        <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 shadow-lg shadow-brand/30">1</div>
+        <h3 class="font-bold text-lg mb-2">Crea tu cuenta</h3>
+        <p class="text-white/60 text-sm leading-relaxed">Regístrate con el nombre de tu taller. No necesitas tarjeta de crédito para la prueba gratuita de 14 días.</p>
+      </div>
+      <div class="animate-on-scroll stagger-2 relative">
+        <div class="w-16 h-16 bg-white/10 border-2 border-brand rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6">2</div>
+        <h3 class="font-bold text-lg mb-2">Importa tus datos</h3>
+        <p class="text-white/60 text-sm leading-relaxed">Carga tu catálogo de servicios, clientes y vehículos. Te ayudamos con la migración sin costo adicional.</p>
+      </div>
+      <div class="animate-on-scroll stagger-3 relative">
+        <div class="w-16 h-16 bg-white/10 border-2 border-white/20 rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6">3</div>
+        <h3 class="font-bold text-lg mb-2">¡Listo para operar!</h3>
+        <p class="text-white/60 text-sm leading-relaxed">Crea tu primera orden de trabajo y experimenta la diferencia. Tu equipo estará operando el mismo día.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- TESTIMONIOS                                          -->
+<!-- ──────────────────────────────────────────────────── -->
+<section class="py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="animate-on-scroll text-4xl font-extrabold text-gray-900 mb-4">Lo que dicen nuestros talleres</h2>
+      <p class="animate-on-scroll stagger-1 text-lg text-gray-500">Talleres reales, resultados reales.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="animate-on-scroll stagger-1 bg-gray-50 rounded-2xl p-6 border border-gray-100 card-hover">
+        <div class="flex gap-1 mb-4">
+          <span class="text-brand">★★★★★</span>
+        </div>
+        <p class="text-gray-700 text-sm leading-relaxed mb-6">"Antes tardaba 30 minutos en sacar una factura. Ahora son 2 clics. Mi contador ya no me regaña y los clientes están felices. Increíble cambio."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-brand/20 rounded-full flex items-center justify-center text-brand font-bold text-sm">RM</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-900">Roberto Morales</div>
+            <div class="text-xs text-gray-500">Taller Morales, Guadalajara</div>
+          </div>
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-2 bg-gray-950 rounded-2xl p-6 card-hover">
+        <div class="flex gap-1 mb-4">
+          <span class="text-brand">★★★★★</span>
+        </div>
+        <p class="text-white/80 text-sm leading-relaxed mb-6">"El control de inventario nos ahorró como 15% en compras el primer mes. Dejamos de comprar refacciones que ya teníamos por no saber dónde estaban."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-brand rounded-full flex items-center justify-center text-white font-bold text-sm">AL</div>
+          <div>
+            <div class="text-sm font-semibold text-white">Ana Leyva</div>
+            <div class="text-xs text-white/50">AutoServicios Leyva, CDMX</div>
+          </div>
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-3 bg-gray-50 rounded-2xl p-6 border border-gray-100 card-hover">
+        <div class="flex gap-1 mb-4">
+          <span class="text-brand">★★★★★</span>
+        </div>
+        <p class="text-gray-700 text-sm leading-relaxed mb-6">"Tenemos 3 sucursales y tallERP nos permite ver todo desde un solo lugar. Los mecánicos tienen sus órdenes claras y yo duermo tranquilo."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-brand/20 rounded-full flex items-center justify-center text-brand font-bold text-sm">JP</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-900">Javier Peña</div>
+            <div class="text-xs text-gray-500">Grupo Automotriz Peña, Monterrey</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- PRICING                                             -->
+<!-- ──────────────────────────────────────────────────── -->
+<section id="pricing" class="py-24 bg-gray-50">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="animate-on-scroll text-4xl font-extrabold text-gray-900 mb-4">Planes simples y transparentes</h2>
+      <p class="animate-on-scroll stagger-1 text-lg text-gray-500 mb-8">Sin sorpresas. Sin costos ocultos. Cancela cuando quieras.</p>
+      <!-- Toggle annual/monthly -->
+      <div class="animate-on-scroll stagger-2 inline-flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-1">
+        <button id="btn-monthly" onclick="setPricing('monthly')" class="pricing-mode-btn active px-5 py-2 rounded-lg text-sm font-semibold transition-all bg-gray-900 text-white">Mensual</button>
+        <button id="btn-annual" onclick="setPricing('annual')" class="pricing-mode-btn px-5 py-2 rounded-lg text-sm font-semibold transition-all text-gray-600 hover:text-gray-900">
+          Anual <span class="ml-1.5 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">-20%</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Básico -->
+      <div class="animate-on-scroll stagger-1 bg-white rounded-2xl p-7 border border-gray-200 card-hover">
+        <div class="mb-6">
+          <div class="text-sm font-semibold text-gray-500 mb-1">Básico</div>
+          <div class="text-4xl font-black text-gray-900 mb-1">
+            <span class="price-monthly">$599</span>
+            <span class="price-annual hidden">$479</span>
+            <span class="text-lg font-normal text-gray-400">/mes</span>
+          </div>
+          <p class="text-sm text-gray-500">Perfecto para talleres pequeños que dan sus primeros pasos digitales.</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1 usuario</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Órdenes de trabajo ilimitadas</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Clientes y vehículos</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Presupuestos básicos</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Inventario (100 SKU)</li>
+          <li class="flex gap-2.5 text-gray-400"><svg class="text-gray-300 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Facturación CFDI</li>
+          <li class="flex gap-2.5 text-gray-400"><svg class="text-gray-300 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Multi-sucursal</li>
+        </ul>
+        <a href="#" class="block text-center border-2 border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:border-brand hover:text-brand transition-colors text-sm">
+          Comenzar gratis 14 días
+        </a>
+      </div>
+
+      <!-- Profesional (DESTACADO) -->
+      <div class="animate-on-scroll stagger-2 bg-gray-950 rounded-2xl p-7 border-2 border-brand relative card-hover shadow-2xl shadow-brand/20">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand text-white text-xs font-bold px-4 py-1.5 rounded-full">
+          ⭐ MÁS POPULAR
+        </div>
+        <div class="mb-6">
+          <div class="text-sm font-semibold text-white/60 mb-1">Profesional</div>
+          <div class="text-4xl font-black text-white mb-1">
+            <span class="price-monthly">$1,199</span>
+            <span class="price-annual hidden">$959</span>
+            <span class="text-lg font-normal text-white/40">/mes</span>
+          </div>
+          <p class="text-sm text-white/60">Para talleres en crecimiento que necesitan el paquete completo.</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Hasta 5 usuarios</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Todo lo del plan Básico</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Facturación CFDI ilimitada</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Inventario ilimitado</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Agenda de citas</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Órdenes de compra</li>
+          <li class="flex gap-2.5 text-white/90"><svg class="text-brand shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dashboard avanzado</li>
+        </ul>
+        <a href="#" class="block text-center bg-brand hover:bg-brand-dark text-white font-bold py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-brand/30">
+          Comenzar gratis 14 días →
+        </a>
+      </div>
+
+      <!-- Empresarial -->
+      <div class="animate-on-scroll stagger-3 bg-white rounded-2xl p-7 border border-gray-200 card-hover">
+        <div class="mb-6">
+          <div class="text-sm font-semibold text-gray-500 mb-1">Empresarial</div>
+          <div class="text-4xl font-black text-gray-900 mb-1">
+            <span class="price-monthly">$2,499</span>
+            <span class="price-annual hidden">$1,999</span>
+            <span class="text-lg font-normal text-gray-400">/mes</span>
+          </div>
+          <p class="text-sm text-gray-500">Para cadenas de talleres y operaciones de alto volumen.</p>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Usuarios ilimitados</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Todo lo del plan Profesional</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Multi-sucursal</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>API personalizada</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>SLA garantizado 99.9%</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Soporte dedicado 24/7</li>
+          <li class="flex gap-2.5 text-gray-700"><svg class="text-green-500 shrink-0 mt-0.5" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Capacitación incluida</li>
+        </ul>
+        <a href="#" class="block text-center border-2 border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:border-brand hover:text-brand transition-colors text-sm">
+          Hablar con ventas
+        </a>
+      </div>
+    </div>
+
+    <p class="text-center text-sm text-gray-400 mt-8">* Precios en MXN. IVA no incluido. Prueba gratuita de 14 días sin necesidad de tarjeta de crédito.</p>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- FAQ                                                  -->
+<!-- ──────────────────────────────────────────────────── -->
+<section id="faq" class="py-24 bg-white">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="animate-on-scroll text-4xl font-extrabold text-gray-900 mb-4">Preguntas frecuentes</h2>
+      <p class="animate-on-scroll stagger-1 text-lg text-gray-500">Todo lo que necesitas saber antes de empezar.</p>
+    </div>
+    <div class="space-y-3">
+      <div class="animate-on-scroll faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Necesito instalar algo?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          No. tallERP es 100% en la nube. Solo necesitas un navegador web y conexión a internet. Funciona en cualquier dispositivo: computadora, tablet o celular.
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-1 faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Puedo migrar mis datos actuales?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          Sí. Nuestro equipo te ayuda a importar clientes, vehículos y catálogos desde Excel o desde otros sistemas. La migración de datos está incluida en todos los planes.
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-2 faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Cómo funciona la facturación CFDI?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          tallERP está integrado con un PAC (Proveedor Autorizado de Certificación). Cuando una orden está completada y el cliente tiene RFC registrado, puedes timbrar el CFDI con un clic directamente desde la plataforma.
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-3 faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Qué pasa con mi información si cancelo?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          Tus datos son tuyos. Si decides cancelar, puedes exportar toda tu información en formato Excel o CSV antes de que expire tu suscripción. Guardamos tus datos por 30 días adicionales por si cambias de opinión.
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-4 faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Pueden usar el sistema varios mecánicos al mismo tiempo?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          Sí. Los planes Profesional y Empresarial permiten múltiples usuarios simultáneos. Puedes asignar roles (administrador, mecánico, recepcionista) con permisos diferenciados.
+        </div>
+      </div>
+      <div class="animate-on-scroll stagger-5 faq-item bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between px-6 py-5 text-left">
+          <span class="font-semibold text-gray-900 text-sm">¿Tienen soporte en español?</span>
+          <svg class="faq-icon text-gray-400 transition-transform duration-300 shrink-0" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer px-6 pb-0 text-sm text-gray-600 leading-relaxed">
+          Por supuesto. Todo nuestro equipo de soporte es mexicano y habla español. Atendemos vía chat, WhatsApp y videollamada de lunes a sábado de 8am a 8pm hora Ciudad de México.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- FINAL CTA                                            -->
+<!-- ──────────────────────────────────────────────────── -->
+<section class="py-24 bg-gray-950 relative overflow-hidden">
+  <div class="hero-glow absolute inset-0 opacity-60 pointer-events-none"></div>
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+  <div class="relative max-w-3xl mx-auto px-6 text-center">
+    <div class="animate-on-scroll text-6xl mb-8">🔧</div>
+    <h2 class="animate-on-scroll stagger-1 text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+      Tu taller merece<br/>
+      <span class="gradient-text">herramientas modernas</span>
+    </h2>
+    <p class="animate-on-scroll stagger-2 text-lg text-white/60 mb-10 leading-relaxed">
+      Únete a los talleres que ya digitalizaron sus operaciones. Prueba tallERP gratis por 14 días, sin tarjeta de crédito, sin compromisos.
+    </p>
+    <div class="animate-on-scroll stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+      <a href="#pricing" class="bg-brand hover:bg-brand-dark text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-2xl shadow-brand/40 hover:-translate-y-0.5">
+        Comenzar prueba gratuita →
+      </a>
+      <a href="#" class="text-white/70 hover:text-white font-medium px-6 py-4 text-base">
+        Hablar con un asesor
+      </a>
+    </div>
+    <p class="animate-on-scroll stagger-4 text-sm text-white/40">
+      Sin tarjeta de crédito · Sin contratos · Cancela cuando quieras
+    </p>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- FOOTER                                               -->
+<!-- ──────────────────────────────────────────────────── -->
+<footer class="bg-gray-950 border-t border-white/5 py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <span class="font-bold text-lg text-white">tall<span class="text-brand">ERP</span></span>
+        </div>
+        <p class="text-sm text-white/40 leading-relaxed mb-4">El sistema de gestión diseñado para talleres automotrices mexicanos.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors text-xs font-bold">f</a>
+          <a href="#" class="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors text-xs font-bold">in</a>
+          <a href="#" class="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-colors text-xs font-bold">ig</a>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Producto</div>
+        <ul class="space-y-2.5">
+          <li><a href="#features" class="text-sm text-white/60 hover:text-white transition-colors">Funciones</a></li>
+          <li><a href="#modules" class="text-sm text-white/60 hover:text-white transition-colors">Módulos</a></li>
+          <li><a href="#pricing" class="text-sm text-white/60 hover:text-white transition-colors">Precios</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Novedades</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Empresa</div>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Acerca de</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Blog</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Contacto</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Trabaja con nosotros</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">Soporte</div>
+        <ul class="space-y-2.5">
+          <li><a href="#faq" class="text-sm text-white/60 hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Centro de ayuda</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Estado del sistema</a></li>
+          <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">WhatsApp soporte</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-white/30">© 2025 tallERP. Todos los derechos reservados.</p>
+      <div class="flex gap-6">
+        <a href="#" class="text-xs text-white/30 hover:text-white/60 transition-colors">Términos de servicio</a>
+        <a href="#" class="text-xs text-white/30 hover:text-white/60 transition-colors">Privacidad</a>
+        <a href="#" class="text-xs text-white/30 hover:text-white/60 transition-colors">Aviso de privacidad</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ──────────────────────────────────────────────────── -->
+<!-- JAVASCRIPT                                           -->
+<!-- ──────────────────────────────────────────────────── -->
+<script>
+  // ── Navbar scroll effect
+  const navbar = document.getElementById('navbar')
+  const navLogo = document.getElementById('nav-logo')
+  const navLinks = navbar.querySelectorAll('a')
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navbar.classList.add('nav-scrolled')
+      navLogo.classList.replace('text-white', 'text-gray-900')
+      navbar.querySelectorAll('a').forEach(a => {
+        a.classList.replace('text-white/80', 'text-gray-600')
+        a.classList.replace('hover:text-white', 'hover:text-gray-900')
+        a.classList.replace('text-white/70', 'text-gray-500')
+      })
+    } else {
+      navbar.classList.remove('nav-scrolled')
+      navLogo.classList.replace('text-gray-900', 'text-white')
+    }
+  })
+
+  // ── Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible')
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' })
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el))
+
+  // ── FAQ accordion
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling
+    const icon = btn.querySelector('.faq-icon')
+    const isOpen = answer.classList.contains('open')
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'))
+    document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = '')
+    // Open clicked
+    if (!isOpen) {
+      answer.classList.add('open')
+      icon.style.transform = 'rotate(180deg)'
+    }
+  }
+
+  // ── Module tabs
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+    document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'))
+    document.getElementById('tab-' + tab).classList.add('active')
+    document.getElementById('panel-' + tab).classList.add('active')
+  }
+
+  // ── Pricing toggle
+  function setPricing(mode) {
+    const monthly = document.querySelectorAll('.price-monthly')
+    const annual  = document.querySelectorAll('.price-annual')
+    const btnM = document.getElementById('btn-monthly')
+    const btnA = document.getElementById('btn-annual')
+    if (mode === 'annual') {
+      monthly.forEach(e => e.classList.add('hidden'))
+      annual.forEach(e => e.classList.remove('hidden'))
+      btnA.classList.add('bg-gray-900', 'text-white')
+      btnA.classList.remove('text-gray-600', 'hover:text-gray-900')
+      btnM.classList.remove('bg-gray-900', 'text-white')
+      btnM.classList.add('text-gray-600')
+    } else {
+      monthly.forEach(e => e.classList.remove('hidden'))
+      annual.forEach(e => e.classList.add('hidden'))
+      btnM.classList.add('bg-gray-900', 'text-white')
+      btnM.classList.remove('text-gray-600')
+      btnA.classList.remove('bg-gray-900', 'text-white')
+      btnA.classList.add('text-gray-600', 'hover:text-gray-900')
+    }
+  }
+
+  // ── Initial animations
+  document.querySelectorAll('.animate-on-scroll').forEach((el, i) => {
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight) el.classList.add('visible')
+  })
+</script>
+</body>
+</html>
