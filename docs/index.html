@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>tallERP — Documentación y Capacitación</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT:'#F97316', dark:'#EA580C', light:'#FFF7ED' },
+          },
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background:#f1f5f9; } ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:99px; }
+    .sidebar-link { display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:500; color:#64748b; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .sidebar-link:hover { background:#f1f5f9; color:#0f172a; }
+    .sidebar-link.active { background:#FFF7ED; color:#F97316; font-weight:600; }
+    .sidebar-link.active .dot { background:#F97316; }
+    .doc-page { display:none; }
+    .doc-page.active { display:block; }
+    .callout { display:flex; gap:12px; padding:16px; border-radius:12px; margin:20px 0; }
+    .callout.tip { background:#f0fdf4; border:1px solid #bbf7d0; }
+    .callout.warning { background:#fffbeb; border:1px solid #fde68a; }
+    .callout.info { background:#eff6ff; border:1px solid #bfdbfe; }
+    .callout.danger { background:#fef2f2; border:1px solid #fecaca; }
+    .step-item { display:flex; gap:16px; margin-bottom:24px; }
+    .step-num { width:32px; height:32px; background:#F97316; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; margin-top:2px; }
+    kbd { display:inline-flex; align-items:center; padding:2px 8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; font-size:11px; font-weight:600; font-family:monospace; color:#475569; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+    .badge-available { background:#dcfce7; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; }
+    .badge-partial { background:#fef3c7; color:#d97706; font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; }
+    .badge-soon { background:#f1f5f9; color:#64748b; font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; }
+    .field-row { display:grid; grid-template-columns:180px 1fr; gap:12px; padding:10px 0; border-bottom:1px solid #f1f5f9; font-size:13px; }
+    .field-name { font-weight:600; color:#0f172a; }
+    .field-desc { color:#64748b; }
+    .field-req { color:#ef4444; font-weight:700; }
+    .search-highlight { background:#fef9c3; border-radius:3px; padding:0 2px; }
+    .progress-bar { height:3px; background:linear-gradient(90deg,#F97316,#FB923C); border-radius:99px; transition:width .3s; }
+    .toc-link { font-size:12px; color:#94a3b8; padding:4px 0; cursor:pointer; border-left:2px solid transparent; padding-left:12px; transition:all .15s; }
+    .toc-link:hover { color:#F97316; border-left-color:#F97316; }
+    .img-mock { background:linear-gradient(135deg,#f8fafc,#f1f5f9); border:1px solid #e2e8f0; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; font-weight:500; }
+    .status-flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:16px 0; }
+    .status-pill { padding:6px 14px; border-radius:99px; font-size:12px; font-weight:600; }
+    table.doc-table { width:100%; border-collapse:collapse; font-size:13px; }
+    table.doc-table th { background:#f8fafc; font-weight:600; color:#475569; padding:10px 14px; text-align:left; border-bottom:1px solid #e2e8f0; font-size:11px; text-transform:uppercase; letter-spacing:.05em; }
+    table.doc-table td { padding:10px 14px; border-bottom:1px solid #f1f5f9; color:#374151; vertical-align:top; }
+    table.doc-table tr:last-child td { border-bottom:none; }
+    .module-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px; cursor:pointer; transition:all .2s; }
+    .module-card:hover { border-color:#F97316; background:#FFF7ED; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TOP BAR                                            -->
+<!-- ══════════════════════════════════════════════════ -->
+<div id="top-bar" class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-100 flex items-center z-50 px-4 gap-4">
+  <!-- Mobile menu -->
+  <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <!-- Logo -->
+  <a href="#" onclick="navigate('intro')" class="flex items-center gap-2 shrink-0">
+    <div class="w-7 h-7 bg-brand rounded-lg flex items-center justify-center">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <span class="font-bold text-sm">tall<span class="text-brand">ERP</span> <span class="text-gray-400 font-normal">Docs</span></span>
+  </a>
+  <!-- Search -->
+  <div class="flex-1 max-w-lg mx-auto relative">
+    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search-input" oninput="searchDocs(this.value)" type="text" placeholder="Buscar en la documentación... (Ctrl+K)" class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"/>
+  </div>
+  <!-- Links -->
+  <div class="hidden sm:flex items-center gap-3 shrink-0">
+    <a href="../landing/index.html" class="text-xs text-gray-500 hover:text-gray-800 transition-colors">Landing</a>
+    <a href="https://erp-talleres.vercel.app" target="_blank" class="bg-brand text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-brand-dark transition-colors">Abrir app →</a>
+  </div>
+  <!-- Progress -->
+  <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100">
+    <div id="read-progress" class="progress-bar" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- LAYOUT                                             -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="flex pt-14 min-h-screen">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="hidden lg:flex flex-col w-64 shrink-0 bg-white border-r border-gray-100 fixed left-0 top-14 bottom-0 overflow-y-auto py-4 z-40">
+    <div class="px-3 space-y-1">
+
+      <!-- INICIO -->
+      <div class="px-3 pt-2 pb-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Inicio</p>
+      </div>
+      <a class="sidebar-link active" id="nav-intro" onclick="navigate('intro')">
+        <span>🏠</span> Introducción
+      </a>
+      <a class="sidebar-link" id="nav-login" onclick="navigate('login')">
+        <span>🔐</span> Acceso al sistema
+      </a>
+      <a class="sidebar-link" id="nav-navigation" onclick="navigate('navigation')">
+        <span>🧭</span> Navegación
+      </a>
+
+      <!-- ATENCIÓN AL CLIENTE -->
+      <div class="px-3 pt-4 pb-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Atención al cliente</p>
+      </div>
+      <a class="sidebar-link" id="nav-dashboard" onclick="navigate('dashboard')">
+        <span>📊</span> Dashboard
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-orders" onclick="navigate('orders')">
+        <span>🔧</span> Órdenes de trabajo
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-appointments" onclick="navigate('appointments')">
+        <span>📅</span> Citas
+        <span class="ml-auto badge-partial">Parcial</span>
+      </a>
+      <a class="sidebar-link" id="nav-quotes" onclick="navigate('quotes')">
+        <span>💬</span> Presupuestos
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-clients" onclick="navigate('clients')">
+        <span>👥</span> Clientes
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-vehicles" onclick="navigate('vehicles')">
+        <span>🚗</span> Vehículos
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-services" onclick="navigate('services')">
+        <span>⚙️</span> Servicios
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+
+      <!-- FINANZAS -->
+      <div class="px-3 pt-4 pb-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Finanzas</p>
+      </div>
+      <a class="sidebar-link" id="nav-receipts" onclick="navigate('receipts')">
+        <span>🧾</span> Recibos de pago
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+      <a class="sidebar-link" id="nav-invoices" onclick="navigate('invoices')">
+        <span>📄</span> Facturas CFDI
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+      <a class="sidebar-link" id="nav-payments" onclick="navigate('payments')">
+        <span>💳</span> Pagos
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+      <a class="sidebar-link" id="nav-commissions" onclick="navigate('commissions')">
+        <span>💰</span> Comisiones
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+      <a class="sidebar-link" id="nav-salesbook" onclick="navigate('salesbook')">
+        <span>📒</span> Libro de ventas
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+
+      <!-- COMPRAS -->
+      <div class="px-3 pt-4 pb-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Compras e Inventario</p>
+      </div>
+      <a class="sidebar-link" id="nav-parts" onclick="navigate('parts')">
+        <span>🔩</span> Repuestos
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-suppliers" onclick="navigate('suppliers')">
+        <span>🏭</span> Proveedores
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-purchase-orders" onclick="navigate('purchase-orders')">
+        <span>🛒</span> Órdenes de compra
+        <span class="ml-auto badge-available">Activo</span>
+      </a>
+      <a class="sidebar-link" id="nav-credits" onclick="navigate('credits')">
+        <span>💵</span> Abonos
+        <span class="ml-auto badge-partial">Parcial</span>
+      </a>
+
+      <!-- CONFIG -->
+      <div class="px-3 pt-4 pb-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Sistema</p>
+      </div>
+      <a class="sidebar-link" id="nav-settings" onclick="navigate('settings')">
+        <span>⚙️</span> Configuración
+        <span class="ml-auto badge-soon">Pronto</span>
+      </a>
+      <a class="sidebar-link" id="nav-shortcuts" onclick="navigate('shortcuts')">
+        <span>⌨️</span> Atajos de teclado
+      </a>
+    </div>
+  </aside>
+
+  <!-- MOBILE SIDEBAR OVERLAY -->
+  <div id="mobile-overlay" onclick="toggleMobileSidebar()" class="hidden fixed inset-0 bg-black/30 z-30 lg:hidden"></div>
+  <aside id="mobile-sidebar" class="hidden fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-gray-100 overflow-y-auto py-4 z-40 lg:hidden">
+    <!-- Same content as sidebar (duplicated for simplicity) -->
+    <div id="mobile-nav-content"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-w-0">
+    <div class="max-w-3xl mx-auto px-6 py-10">
+
+      <!-- ════════════════════════ INTRO ════════════════════════ -->
+      <div id="page-intro" class="doc-page active">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6">
+          <span>Docs</span><span>›</span><span class="text-gray-600 font-medium">Introducción</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-3">Bienvenido a tallERP</h1>
+        <p class="text-lg text-gray-500 mb-8 leading-relaxed">Esta documentación te ayudará a dominar todas las funciones del sistema. Ya seas recepcionista, mecánico o administrador, aquí encontrarás todo lo que necesitas.</p>
+
+        <div class="callout info">
+          <span class="text-xl">📖</span>
+          <div><strong class="text-blue-800">¿Cómo usar esta documentación?</strong><br/><span class="text-sm text-blue-700">Navega por los módulos en el panel izquierdo, usa el buscador (Ctrl+K) o sigue la guía en orden. Los módulos marcados como "Activo" están disponibles hoy; "Pronto" estarán disponibles próximamente.</span></div>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mt-10 mb-5">¿Qué es tallERP?</h2>
+        <p class="text-gray-600 mb-4 leading-relaxed">tallERP es un sistema de gestión integral diseñado específicamente para talleres automotrices en México. Centraliza todas las operaciones del taller en una única plataforma:</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mt-6 mb-10">
+          <div onclick="navigate('orders')" class="module-card">
+            <div class="text-2xl mb-2">🔧</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Órdenes de trabajo</div>
+            <div class="text-xs text-gray-500">Gestiona cada reparación desde la entrada hasta la entrega.</div>
+          </div>
+          <div onclick="navigate('quotes')" class="module-card">
+            <div class="text-2xl mb-2">💬</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Presupuestos</div>
+            <div class="text-xs text-gray-500">Cotiza servicios y conviértelos en órdenes con un clic.</div>
+          </div>
+          <div onclick="navigate('clients')" class="module-card">
+            <div class="text-2xl mb-2">👥</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Clientes y vehículos</div>
+            <div class="text-xs text-gray-500">Expediente digital completo de cada cliente y su flota.</div>
+          </div>
+          <div onclick="navigate('parts')" class="module-card">
+            <div class="text-2xl mb-2">🔩</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Inventario</div>
+            <div class="text-xs text-gray-500">Control de repuestos, proveedores y órdenes de compra.</div>
+          </div>
+          <div onclick="navigate('invoices')" class="module-card">
+            <div class="text-2xl mb-2">📄</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Facturación CFDI</div>
+            <div class="text-xs text-gray-500">Timbra facturas SAT directamente desde la orden.</div>
+          </div>
+          <div onclick="navigate('dashboard')" class="module-card">
+            <div class="text-2xl mb-2">📊</div>
+            <div class="font-semibold text-gray-900 text-sm mb-1">Dashboard</div>
+            <div class="text-xs text-gray-500">KPIs, gráficas y alertas de tu negocio en tiempo real.</div>
+          </div>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-5">Roles de usuario</h2>
+        <table class="doc-table">
+          <thead><tr><th>Rol</th><th>Descripción</th><th>Accesos principales</th></tr></thead>
+          <tbody>
+            <tr><td><span class="font-semibold">👑 Admin</span></td><td>Dueño o gerente del taller</td><td>Acceso total: reportes, configuración, finanzas, todo.</td></tr>
+            <tr><td><span class="font-semibold">🔧 Mecánico</span></td><td>Técnico que realiza los trabajos</td><td>Ver y actualizar sus órdenes asignadas, consultar catálogo de servicios.</td></tr>
+            <tr><td><span class="font-semibold">📋 Recepcionista</span></td><td>Atiende clientes y crea órdenes</td><td>Clientes, vehículos, órdenes, presupuestos, citas. Sin acceso a finanzas.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="mt-10 flex gap-3">
+          <button onclick="navigate('login')" class="bg-brand text-white font-semibold px-6 py-3 rounded-xl text-sm hover:bg-brand-dark transition-colors">Siguiente: Acceso al sistema →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ LOGIN ════════════════════════ -->
+      <div id="page-login" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inicio</span><span>›</span><span class="text-gray-600 font-medium">Acceso al sistema</span></div>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-3">Acceso al sistema</h1>
+        <p class="text-gray-500 mb-8">Cómo iniciar sesión, cerrar sesión y gestionar tu perfil.</p>
+
+        <h2 class="text-lg font-bold mb-4">Iniciar sesión</h2>
+        <div class="step-item"><div class="step-num">1</div><div><strong class="text-gray-900">Abre el sistema</strong><br/><span class="text-sm text-gray-500">Ingresa a <code class="bg-gray-100 px-2 py-0.5 rounded text-xs">erp-talleres.vercel.app</code> en tu navegador. Recomendamos Google Chrome o Firefox actualizado.</span></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><strong class="text-gray-900">Ingresa tus credenciales</strong><br/><span class="text-sm text-gray-500">Escribe tu correo institucional y contraseña. Tu administrador te habrá compartido estos datos al crearte la cuenta.</span></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><strong class="text-gray-900">Haz clic en "Iniciar sesión"</strong><br/><span class="text-sm text-gray-500">Si los datos son correctos, serás redirigido al Dashboard automáticamente. La sesión se guarda por 7 días.</span></div></div>
+
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">Sesión persistente</strong><br/><span class="text-sm text-green-700">No necesitas iniciar sesión cada vez que abres el sistema. Tu sesión se mantiene activa hasta que cierres sesión manualmente o pasen 7 días sin actividad.</span></div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Cerrar sesión</h2>
+        <div class="step-item"><div class="step-num">1</div><div><strong>Haz clic en tu avatar</strong> en la esquina superior derecha del topbar.</div></div>
+        <div class="step-item"><div class="step-num">2</div><div><strong>Selecciona "Cerrar sesión"</strong> (en rojo) en el menú desplegable. Serás redirigido a la pantalla de login.</div></div>
+
+        <div class="callout warning"><span class="text-xl">⚠️</span><div><strong class="text-amber-800">En equipos compartidos</strong><br/><span class="text-sm text-amber-700">Si utilizas una computadora compartida con otros empleados, recuerda siempre cerrar sesión al terminar tu jornada para proteger la información del taller.</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('intro')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-colors">← Anterior</button>
+          <button onclick="navigate('navigation')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark transition-colors">Siguiente: Navegación →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ NAVIGATION ════════════════════════ -->
+      <div id="page-navigation" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inicio</span><span>›</span><span class="text-gray-600 font-medium">Navegación</span></div>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-3">Navegación y layout</h1>
+        <p class="text-gray-500 mb-8">Conoce las partes del sistema para moverte con fluidez.</p>
+
+        <h2 class="text-lg font-bold mb-4">Estructura de la pantalla</h2>
+        <div class="img-mock h-48 mb-6 text-center flex-col gap-2">
+          <div class="w-full h-full relative overflow-hidden rounded-xl border border-gray-200">
+            <div class="absolute top-0 left-0 right-0 h-8 bg-white border-b border-gray-200 flex items-center px-3 gap-2">
+              <div class="w-4 h-4 bg-brand/20 rounded"></div>
+              <div class="text-xs text-gray-400">Topbar — logo, búsqueda, notificaciones, usuario</div>
+            </div>
+            <div class="absolute left-0 top-8 bottom-0 w-28 bg-white border-r border-gray-200 flex flex-col p-2 gap-1">
+              <div class="text-xs text-gray-400 font-medium mb-1">Sidebar</div>
+              <div class="h-4 bg-brand/10 rounded-md"></div>
+              <div class="h-4 bg-gray-100 rounded-md"></div>
+              <div class="h-4 bg-gray-100 rounded-md"></div>
+              <div class="h-4 bg-gray-100 rounded-md"></div>
+            </div>
+            <div class="absolute left-28 top-8 bottom-0 right-0 bg-gray-50 p-3">
+              <div class="text-xs text-gray-400 font-medium mb-2">Área de contenido (módulo activo)</div>
+              <div class="grid grid-cols-4 gap-2">
+                <div class="h-12 bg-white rounded border border-gray-200"></div>
+                <div class="h-12 bg-white rounded border border-gray-200"></div>
+                <div class="h-12 bg-white rounded border border-gray-200"></div>
+                <div class="h-12 bg-white rounded border border-gray-200"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="doc-table mb-8">
+          <thead><tr><th>Zona</th><th>Qué hace</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Topbar</strong> (barra superior)</td><td>Logo, botón de colapsar sidebar, notificaciones y menú de usuario con opción de cerrar sesión.</td></tr>
+            <tr><td><strong>Sidebar</strong> (panel izquierdo)</td><td>Navegación principal agrupada por área: Atención al cliente, Finanzas y Compras. Se puede colapsar con el botón ☰.</td></tr>
+            <tr><td><strong>Área de contenido</strong></td><td>Cada módulo se muestra aquí. Cambia según la opción seleccionada en el sidebar.</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">El sidebar en detalle</h2>
+        <p class="text-sm text-gray-600 mb-4">El ítem activo (el módulo que estás viendo) se resalta con fondo naranja. Puedes colapsar el sidebar haciendo clic en el ícono <strong>☰</strong> en el topbar para ganar espacio en pantalla.</p>
+
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">Navega rápido</strong><br/><span class="text-sm text-green-700">Puedes usar el buscador del topbar o simplemente hacer clic en cualquier sección del sidebar. No hay que cargar páginas: todo cambia instantáneamente.</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('login')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('dashboard')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Dashboard →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ DASHBOARD ════════════════════════ -->
+      <div id="page-dashboard" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Dashboard</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Dashboard</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">La pantalla de inicio que muestra el estado general de tu taller en tiempo real.</p>
+
+        <h2 class="text-lg font-bold mb-4">KPIs (tarjetas de indicadores)</h2>
+        <table class="doc-table mb-8">
+          <thead><tr><th>Indicador</th><th>Qué mide</th><th>Cómo se calcula</th></tr></thead>
+          <tbody>
+            <tr><td>🔧 <strong>Órdenes activas</strong></td><td>Trabajos en curso ahora mismo</td><td>Órdenes con estado "Pendiente" o "En progreso"</td></tr>
+            <tr><td>💰 <strong>Ingresos del mes</strong></td><td>Total facturado en el mes actual</td><td>Suma de órdenes completadas en el mes, con % de variación vs mes anterior</td></tr>
+            <tr><td>💬 <strong>Cotizaciones pendientes</strong></td><td>Presupuestos sin respuesta</td><td>Cotizaciones en estado "Pendiente"</td></tr>
+            <tr><td>👥 <strong>Clientes totales</strong></td><td>Clientes registrados en el sistema</td><td>Total de registros en el catálogo de clientes</td></tr>
+            <tr><td>🏭 <strong>Deuda a proveedores</strong></td><td>Saldo total pendiente con proveedores</td><td>Suma del campo "balance" de todos los proveedores</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Gráficas</h2>
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">📊 Ingresos últimos 6 meses</div><div class="text-xs text-gray-500">Barras apiladas: naranja = mano de obra, naranja claro = refacciones. Pasa el mouse por una barra para ver el desglose exacto del mes.</div></div>
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🍩 Órdenes por estado</div><div class="text-xs text-gray-500">Dona con la distribución actual: Pendiente, En progreso, Completada, Cancelada. Refleja solo las órdenes existentes en el sistema.</div></div>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Panel de alertas</h2>
+        <p class="text-sm text-gray-600 mb-3">El sistema genera alertas automáticas cuando detecta situaciones que requieren atención:</p>
+        <div class="space-y-2 mb-8">
+          <div class="flex gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg text-sm"><span>⚠️</span><div><strong>Órdenes sin atender</strong> — hay OTs en estado "Pendiente" que llevan más de 24 h sin actualizar.</div></div>
+          <div class="flex gap-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm"><span>🔴</span><div><strong>Stock bajo</strong> — repuestos cuyo stock actual está por debajo del mínimo configurado.</div></div>
+          <div class="flex gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm"><span>💬</span><div><strong>Cotizaciones sin revisar</strong> — presupuestos en estado "Pendiente" enviados al cliente hace más de 48 h.</div></div>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Acciones rápidas</h2>
+        <p class="text-sm text-gray-600 mb-4">Cuatro botones en el dashboard llevan directamente a las acciones más frecuentes: <strong>Nueva orden</strong>, <strong>Nuevo presupuesto</strong>, <strong>Nuevo cliente</strong> y <strong>Nuevo repuesto</strong>.</p>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('navigation')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('orders')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Órdenes de trabajo →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ ORDERS ════════════════════════ -->
+      <div id="page-orders" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Órdenes de trabajo</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Órdenes de trabajo</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">El corazón del sistema. Aquí se gestiona cada vehículo que entra al taller, desde la recepción hasta la entrega.</p>
+
+        <h2 class="text-lg font-bold mb-4">Estados de una orden</h2>
+        <div class="status-flow mb-6">
+          <span class="status-pill bg-amber-100 text-amber-700">🟡 Pendiente</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-blue-100 text-blue-700">🔵 En progreso</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-emerald-100 text-emerald-700">🟢 Completada</span>
+          <span class="text-gray-400 text-sm">(también puede ir a)</span>
+          <span class="status-pill bg-violet-100 text-violet-700">🟣 Cancelada</span>
+        </div>
+        <div class="callout warning"><span class="text-xl">⚠️</span><div><strong class="text-amber-800">Al completar una orden</strong><br/><span class="text-sm text-amber-700">Cuando cambias el estado a "Completada", el sistema descuenta automáticamente del inventario todas las refacciones registradas en la orden. Esta acción no se puede deshacer sin ajuste manual de stock.</span></div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Crear una nueva orden de trabajo</h2>
+        <div class="step-item"><div class="step-num">1</div><div><strong>Ve a Órdenes de trabajo</strong> en el sidebar y haz clic en <span class="bg-brand/10 text-brand text-xs font-semibold px-2 py-1 rounded">+ Nueva orden</span>.</div></div>
+        <div class="step-item"><div class="step-num">2</div><div><strong>Selecciona el cliente</strong>: escribe el nombre o teléfono en el buscador. Si el cliente no existe, créalo primero desde el módulo de Clientes.</div></div>
+        <div class="step-item"><div class="step-num">3</div><div><strong>Selecciona el vehículo</strong>: al elegir un cliente, aparecen automáticamente sus vehículos registrados. Elige el que va a entrar.</div></div>
+        <div class="step-item"><div class="step-num">4</div><div><strong>Agrega los servicios</strong>: busca servicios del catálogo o escribe uno nuevo. Cada servicio tiene precio y puedes ajustar la cantidad.</div></div>
+        <div class="step-item"><div class="step-num">5</div><div><strong>Agrega las refacciones</strong>: busca en el catálogo de repuestos. El sistema muestra el stock disponible. Si no hay existencia, verás una advertencia.</div></div>
+        <div class="step-item"><div class="step-num">6</div><div><strong>Asigna un técnico</strong> (opcional): selecciona al mecánico responsable de esta orden.</div></div>
+        <div class="step-item"><div class="step-num">7</div><div><strong>Guarda</strong>: la orden se crea con estado "Pendiente" y se le asigna un número consecutivo (OT-0001, OT-0002…).</div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Cambiar el estado de una orden</h2>
+        <p class="text-sm text-gray-600 mb-4">En la tabla de órdenes, cada fila tiene un selector de estado directamente visible. Solo haz clic y elige el nuevo estado — no necesitas abrir la orden.</p>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Badge COT</h2>
+        <p class="text-sm text-gray-600 mb-4">Las órdenes creadas a partir de un presupuesto muestran un badge <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">COT</span> con el número de cotización origen. Así puedes rastrear de dónde vino la orden.</p>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Buscar y filtrar</h2>
+        <table class="doc-table mb-4">
+          <thead><tr><th>Filtro</th><th>Cómo usarlo</th></tr></thead>
+          <tbody>
+            <tr><td>Barra de búsqueda</td><td>Busca por número de OT, nombre de cliente o placa del vehículo.</td></tr>
+            <tr><td>Chips de estado</td><td>Haz clic en "Pendiente", "En progreso", etc., para filtrar solo ese estado. Haz clic de nuevo para quitar el filtro.</td></tr>
+            <tr><td>KPIs superiores</td><td>Los números en los KPIs también son clicables para filtrar directamente.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('dashboard')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('appointments')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Citas →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ APPOINTMENTS ════════════════════════ -->
+      <div id="page-appointments" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Citas</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Citas</h1><span class="badge-partial mt-2">Parcial</span></div>
+        <p class="text-gray-500 mb-8">Agenda y gestiona las citas del taller con una vista de calendario.</p>
+
+        <div class="callout info"><span class="text-xl">🔧</span><div><strong class="text-blue-800">Módulo en desarrollo</strong><br/><span class="text-sm text-blue-700">Actualmente puedes visualizar citas en el calendario. La creación, edición y confirmación de citas estarán disponibles en la próxima versión.</span></div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-6">Vista del calendario</h2>
+        <p class="text-sm text-gray-600 mb-4">El módulo de citas muestra un calendario mensual con las citas programadas. Puedes cambiar entre vista de <strong>Mes</strong>, <strong>Semana</strong> y <strong>Día</strong> usando las pestañas en la esquina superior derecha.</p>
+
+        <h2 class="text-lg font-bold mb-4">Navegación del calendario</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Botón</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>‹</kbd></td><td>Mes / semana anterior</td></tr>
+            <tr><td><strong>Hoy</strong></td><td>Vuelve a la fecha actual</td></tr>
+            <tr><td><kbd>›</kbd></td><td>Mes / semana siguiente</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Estados de una cita</h2>
+        <div class="status-flow mb-6">
+          <span class="status-pill bg-amber-100 text-amber-700">🟡 Programada</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-blue-100 text-blue-700">🔵 Confirmada</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-emerald-100 text-emerald-700">🟢 Completada</span>
+          <span class="text-gray-400 text-sm">o</span>
+          <span class="status-pill bg-violet-100 text-violet-700">🟣 Cancelada</span>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Funciones próximas</h2>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 mb-6">
+          <li>Crear nueva cita desde el calendario</li>
+          <li>Confirmar o cancelar citas</li>
+          <li>Convertir cita confirmada en orden de trabajo</li>
+          <li>Recordatorios automáticos por WhatsApp/email</li>
+        </ul>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('orders')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('quotes')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Presupuestos →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ QUOTES ════════════════════════ -->
+      <div id="page-quotes" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Presupuestos</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Presupuestos</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Crea cotizaciones detalladas con diagnóstico, mano de obra y refacciones. Conviértelas en órdenes con un clic cuando el cliente aprueba.</p>
+
+        <h2 class="text-lg font-bold mb-4">Estados de un presupuesto</h2>
+        <div class="status-flow mb-8">
+          <span class="status-pill bg-amber-100 text-amber-700">Pendiente</span><span class="text-gray-400">→</span>
+          <span class="status-pill bg-blue-100 text-blue-700">Enviada</span><span class="text-gray-400">→</span>
+          <span class="status-pill bg-emerald-100 text-emerald-700">Aprobada</span><span class="text-gray-400">→</span>
+          <span class="status-pill bg-orange-100 text-orange-700">En proceso</span><span class="text-gray-400">→</span>
+          <span class="status-pill bg-violet-100 text-violet-700">Concluida</span>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Crear un presupuesto</h2>
+        <p class="text-sm text-gray-600 mb-4">El formulario de presupuesto tiene 5 secciones:</p>
+
+        <div class="space-y-3 mb-8">
+          <div class="border border-gray-200 rounded-xl p-4">
+            <div class="font-semibold text-sm text-gray-800 mb-1">1. Datos del cliente</div>
+            <div class="text-xs text-gray-500">Teléfono, nombre, si requiere factura (activa campos RFC, email fiscal). Puedes buscar un cliente existente o capturar los datos nuevos.</div>
+          </div>
+          <div class="border border-gray-200 rounded-xl p-4">
+            <div class="font-semibold text-sm text-gray-800 mb-1">2. Datos del vehículo</div>
+            <div class="text-xs text-gray-500">Placa, VIN, marca, modelo, año, kilómetros. Si el cliente ya tiene vehículos registrados aparecen para selección rápida.</div>
+          </div>
+          <div class="border border-gray-200 rounded-xl p-4">
+            <div class="font-semibold text-sm text-gray-800 mb-1">3. Recepción y estado del vehículo</div>
+            <div class="text-xs text-gray-500">Nivel de combustible (barra gráfica de 8 octavos), objetos de valor, daños visibles por zona (frente, izquierda, derecha, tablero).</div>
+          </div>
+          <div class="border border-gray-200 rounded-xl p-4">
+            <div class="font-semibold text-sm text-gray-800 mb-1">4. Diagnóstico y problema</div>
+            <div class="text-xs text-gray-500">Descripción del problema (mínimo 10 caracteres), síntomas, prioridad (Baja / Media / Alta / Urgente), si requiere escáner.</div>
+          </div>
+          <div class="border border-gray-200 rounded-xl p-4">
+            <div class="font-semibold text-sm text-gray-800 mb-1">5. Partidas: mano de obra y refacciones</div>
+            <div class="text-xs text-gray-500">Agrega líneas de servicio (descripción + horas + precio/hora) y líneas de refacción (nombre + SKU + cantidad + precio). El sistema calcula el total en tiempo real con descuento opcional.</div>
+          </div>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Convertir presupuesto en Orden de Trabajo</h2>
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">Conversión con un clic</strong><br/><span class="text-sm text-green-700">Cuando el cliente aprueba, abre el presupuesto, despliega la fila y haz clic en <strong>"Convertir a OT"</strong>. El sistema crea la orden automáticamente con todos los servicios y refacciones copiados, y cambia el estado del presupuesto a "En proceso".</span></div></div>
+
+        <div class="callout info"><span class="text-xl">ℹ️</span><div><strong class="text-blue-800">Inventario al convertir</strong><br/><span class="text-sm text-blue-700">Al convertir a OT, el stock <strong>NO</strong> se descuenta todavía. El inventario se descuenta únicamente cuando la orden pasa a estado "Completada".</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('appointments')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('clients')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Clientes →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ CLIENTS ════════════════════════ -->
+      <div id="page-clients" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Clientes</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Clientes</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Catálogo completo de clientes con sus datos de contacto, facturación y vehículos.</p>
+
+        <h2 class="text-lg font-bold mb-4">Alta de un nuevo cliente</h2>
+        <div class="step-item"><div class="step-num">1</div><div>Ve a <strong>Clientes</strong> → <span class="bg-brand/10 text-brand text-xs font-semibold px-2 py-1 rounded">+ Nuevo cliente</span>.</div></div>
+        <div class="step-item"><div class="step-num">2</div><div>Selecciona el tipo: <strong>Persona física</strong> o <strong>Empresa</strong>. Esto cambia qué campos son obligatorios.</div></div>
+        <div class="step-item"><div class="step-num">3</div><div>Llena los datos de contacto (nombre, teléfono, correo). El teléfono tiene 10 dígitos mínimo.</div></div>
+        <div class="step-item"><div class="step-num">4</div><div>Si requiere factura, activa la opción <strong>"Requiere facturación"</strong> y llena RFC, razón social, régimen fiscal y CP.</div></div>
+        <div class="step-item"><div class="step-num">5</div><div>Opcionalmente registra uno o más vehículos directamente en el formulario del cliente.</div></div>
+        <div class="step-item"><div class="step-num">6</div><div>Guarda. El cliente aparece en la tabla y ya puede usarse en órdenes y presupuestos.</div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-8">Campos de facturación (RFC)</h2>
+        <div class="space-y-0 border border-gray-100 rounded-xl overflow-hidden mb-8">
+          <div class="field-row px-4"><span class="field-name">RFC <span class="field-req">*</span></span><span class="field-desc">Registro Federal de Contribuyentes del cliente. 12 caracteres (empresa) o 13 (física).</span></div>
+          <div class="field-row px-4"><span class="field-name">Razón social <span class="field-req">*</span></span><span class="field-desc">Nombre fiscal exactamente como está en el SAT.</span></div>
+          <div class="field-row px-4"><span class="field-name">Régimen fiscal <span class="field-req">*</span></span><span class="field-desc">Selecciona del catálogo SAT (ej. RESICO 626, Persona moral 601).</span></div>
+          <div class="field-row px-4"><span class="field-name">Uso del CFDI <span class="field-req">*</span></span><span class="field-desc">Código de uso SAT (ej. G03 Gastos en general, S01 Sin efectos fiscales).</span></div>
+          <div class="field-row px-4"><span class="field-name">Correo fiscal <span class="field-req">*</span></span><span class="field-desc">Email donde se enviará la factura.</span></div>
+          <div class="field-row px-4"><span class="field-name">Código postal <span class="field-req">*</span></span><span class="field-desc">CP del domicilio fiscal.</span></div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('quotes')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('vehicles')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Vehículos →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ VEHICLES ════════════════════════ -->
+      <div id="page-vehicles" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Vehículos</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Vehículos</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Ficha técnica de cada vehículo, incluyendo checklist de recepción y estado general.</p>
+
+        <h2 class="text-lg font-bold mb-4">Datos del vehículo</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Campo</th><th>Descripción</th><th>Req.</th></tr></thead>
+          <tbody>
+            <tr><td>Cliente</td><td>Propietario del vehículo (debe existir previamente)</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Placa</td><td>Matrícula del vehículo</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Marca / Modelo / Año</td><td>Datos del fabricante</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>VIN</td><td>Número de serie del vehículo (17 caracteres)</td><td>No</td></tr>
+            <tr><td>Color</td><td>Color principal del vehículo</td><td>No</td></tr>
+            <tr><td>Kilometraje</td><td>Kilómetros al momento del registro</td><td>No</td></tr>
+            <tr><td>Tipo de combustible</td><td>Gasolina, Diesel, Híbrido, Eléctrico, Gas</td><td>No</td></tr>
+            <tr><td>Transmisión</td><td>Automática, Manual, CVT, Otra</td><td>No</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Checklist de recepción</h2>
+        <p class="text-sm text-gray-600 mb-3">Al registrar o editar un vehículo puedes marcar los ítems del checklist. Esto queda guardado como evidencia de las condiciones de entrada:</p>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-100"><div class="font-semibold text-xs text-gray-500 mb-2 uppercase">Exterior</div><div class="text-sm text-gray-600 space-y-1"><div>☐ Defensa</div><div>☐ Faros</div><div>☐ Espejos</div><div>☐ Rines</div><div>☐ Cristales</div><div>☐ Pintura</div></div></div>
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-100"><div class="font-semibold text-xs text-gray-500 mb-2 uppercase">Interior</div><div class="text-sm text-gray-600 space-y-1"><div>☐ Pantalla</div><div>☐ Estéreo</div><div>☐ Tapetes</div><div>☐ Herramientas</div><div>☐ Gato</div><div>☐ Llanta de refacción</div></div></div>
+        </div>
+        <p class="text-xs text-gray-400">El nivel de combustible se registra en octavos (0–8) mediante un selector gráfico.</p>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('clients')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('services')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Servicios →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ SERVICES ════════════════════════ -->
+      <div id="page-services" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Atención al cliente</span><span>›</span><span class="text-gray-600 font-medium">Servicios</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Catálogo de servicios</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Define los servicios que ofrece tu taller con su precio base, tiempo estimado y refacciones requeridas.</p>
+
+        <h2 class="text-lg font-bold mb-4">¿Para qué sirve el catálogo?</h2>
+        <p class="text-sm text-gray-600 mb-6">Al crear órdenes y presupuestos, puedes buscar servicios desde este catálogo en lugar de capturarlos manualmente cada vez. Esto garantiza consistencia en precios y tiempos.</p>
+
+        <h2 class="text-lg font-bold mb-4">Campos del servicio</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Campo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>Nombre</td><td>Nombre descriptivo del servicio (ej. "Cambio de aceite y filtro")</td></tr>
+            <tr><td>Categoría</td><td>Tipo de servicio: Mantenimiento, Motor, Frenos, Suspensión, Eléctrica, etc.</td></tr>
+            <tr><td>Precio base</td><td>Precio de lista que aparece al seleccionar el servicio en una orden. Se puede ajustar por orden.</td></tr>
+            <tr><td>Horas estimadas</td><td>Tiempo esperado para completar el servicio</td></tr>
+            <tr><td>Refacciones requeridas</td><td>Lista de partes que normalmente se usan en este servicio (opcional, referencial)</td></tr>
+            <tr><td>Activo</td><td>Si está desactivado, no aparece en las búsquedas de órdenes y presupuestos</td></tr>
+          </tbody>
+        </table>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('vehicles')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('receipts')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Finanzas →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ RECEIPTS ════════════════════════ -->
+      <div id="page-receipts" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Finanzas</span><span>›</span><span class="text-gray-600 font-medium">Recibos de pago</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Recibos de pago</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-8">Registro de cobros realizados a clientes por órdenes de trabajo completadas.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong class="text-blue-800">En desarrollo</strong><br/><span class="text-sm text-blue-700">Este módulo estará disponible en la próxima versión. La información a continuación describe su funcionamiento previsto.</span></div></div>
+        <h2 class="text-lg font-bold mb-4 mt-6">Descripción del módulo</h2>
+        <p class="text-sm text-gray-600 mb-4">Los recibos de pago permiten registrar los cobros realizados a clientes. Cada recibo está vinculado a una orden de trabajo y al cliente correspondiente.</p>
+        <h2 class="text-lg font-bold mb-4">Métodos de pago soportados</h2>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg">💵 Efectivo</span>
+          <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg">💳 Tarjeta</span>
+          <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg">🏦 Transferencia</span>
+          <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg">📝 Cheque</span>
+        </div>
+        <h2 class="text-lg font-bold mb-4">Campos del recibo</h2>
+        <table class="doc-table"><thead><tr><th>Campo</th><th>Descripción</th></tr></thead><tbody>
+          <tr><td>Número de recibo</td><td>Folio consecutivo generado automáticamente (REC-0001)</td></tr>
+          <tr><td>Orden de trabajo</td><td>Referencia a la OT que se está pagando</td></tr>
+          <tr><td>Cliente</td><td>Heredado automáticamente de la orden</td></tr>
+          <tr><td>Monto</td><td>Cantidad cobrada en MXN</td></tr>
+          <tr><td>Método de pago</td><td>Efectivo, Tarjeta, Transferencia o Cheque</td></tr>
+          <tr><td>Notas</td><td>Observaciones opcionales (ej. número de referencia)</td></tr>
+        </tbody></table>
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('services')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('invoices')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Facturas CFDI →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ INVOICES ════════════════════════ -->
+      <div id="page-invoices" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Finanzas</span><span>›</span><span class="text-gray-600 font-medium">Facturas CFDI</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Facturas CFDI</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-8">Emisión de comprobantes fiscales digitales directamente desde la orden de trabajo.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong class="text-blue-800">En desarrollo</strong><br/><span class="text-sm text-blue-700">La integración con el PAC (Proveedor Autorizado de Certificación) estará disponible próximamente.</span></div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-6">Condiciones para emitir un CFDI</h2>
+        <div class="space-y-2 mb-6">
+          <div class="flex gap-3 p-3 bg-green-50 border border-green-100 rounded-lg text-sm"><span>✅</span><div>La orden de trabajo debe estar en estado <strong>"Completada"</strong></div></div>
+          <div class="flex gap-3 p-3 bg-green-50 border border-green-100 rounded-lg text-sm"><span>✅</span><div>El cliente debe tener <strong>RFC registrado</strong> en su perfil</div></div>
+          <div class="flex gap-3 p-3 bg-green-50 border border-green-100 rounded-lg text-sm"><span>✅</span><div>El cliente debe tener <strong>régimen fiscal</strong> y <strong>uso de CFDI</strong> configurados</div></div>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Estados de una factura</h2>
+        <div class="status-flow mb-6">
+          <span class="status-pill bg-gray-100 text-gray-700">Borrador</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-emerald-100 text-emerald-700">Timbrada</span>
+          <span class="text-gray-400">o</span>
+          <span class="status-pill bg-red-100 text-red-700">Cancelada</span>
+        </div>
+
+        <div class="callout danger"><span class="text-xl">🚨</span><div><strong class="text-red-800">Cancelación de CFDI</strong><br/><span class="text-sm text-red-700">Una factura timbrada solo puede cancelarse siguiendo el proceso del SAT. Esta acción requiere confirmación del cliente en ciertos casos. Consulta con tu contador antes de cancelar.</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('receipts')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('payments')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Pagos →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ PAYMENTS ════════════════════════ -->
+      <div id="page-payments" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Finanzas</span><span>›</span><span class="text-gray-600 font-medium">Pagos</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Pagos</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-6">Registro de pagos recibidos contra facturas CFDI emitidas.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong>En desarrollo.</strong><span class="text-sm text-blue-700"> Permitirá registrar complementos de pago cuando el cliente pague en parcialidades, manteniendo el saldo actualizado por factura.</span></div></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('invoices')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('commissions')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Comisiones →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ COMMISSIONS ════════════════════════ -->
+      <div id="page-commissions" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Finanzas</span><span>›</span><span class="text-gray-600 font-medium">Comisiones</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Comisiones</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-6">Cálculo automático de comisiones por técnico basado en órdenes cerradas.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong>En desarrollo.</strong><span class="text-sm text-blue-700"> Calculará automáticamente el porcentaje de comisión configurado por técnico sobre el total de servicios facturados en el período seleccionado.</span></div></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('payments')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('salesbook')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Libro de ventas →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ SALESBOOK ════════════════════════ -->
+      <div id="page-salesbook" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Finanzas</span><span>›</span><span class="text-gray-600 font-medium">Libro de ventas</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Libro de ventas</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-6">Reporte consolidado de todas las operaciones del período, exportable para tu contador.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong>En desarrollo.</strong><span class="text-sm text-blue-700"> Generará un reporte por período (semana, mes, año) con todas las órdenes completadas, facturas emitidas, ingresos por categoría y totales para declaración fiscal. Exportable a Excel y PDF.</span></div></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('commissions')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('parts')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Repuestos →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ PARTS ════════════════════════ -->
+      <div id="page-parts" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inventario</span><span>›</span><span class="text-gray-600 font-medium">Repuestos</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Repuestos</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Catálogo de refacciones con control de stock, precios y alertas de mínimos.</p>
+
+        <h2 class="text-lg font-bold mb-4">Campos del repuesto</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Campo</th><th>Descripción</th><th>Req.</th></tr></thead>
+          <tbody>
+            <tr><td>SKU</td><td>Código único de identificación de la parte</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Nombre</td><td>Nombre descriptivo de la refacción</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Categoría</td><td>Lubricantes, Filtros, Frenos, Motor, etc.</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Proveedor</td><td>Proveedor principal de esta parte</td><td>No</td></tr>
+            <tr><td>Stock actual</td><td>Unidades disponibles en el almacén</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Stock mínimo</td><td>Umbral para alerta de reabastecimiento</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Precio de venta</td><td>Precio al cliente (el que se usa en órdenes)</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Costo de compra</td><td>Precio al que se compra al proveedor</td><td class="text-red-500 font-bold">Sí</td></tr>
+            <tr><td>Unidad</td><td>pieza, litro, set, kit, metro, par</td><td>No</td></tr>
+            <tr><td>Ubicación</td><td>Estante o zona del almacén (ej. "A-3")</td><td>No</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Alerta de stock bajo</h2>
+        <p class="text-sm text-gray-600 mb-4">Cuando el <strong>Stock actual</strong> cae por debajo del <strong>Stock mínimo</strong>, la parte aparece destacada en el panel de alertas del Dashboard y en la tabla de repuestos con un indicador rojo.</p>
+
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">Descuento automático</strong><br/><span class="text-sm text-green-700">Cada vez que una orden de trabajo cambia a "Completada", el sistema descuenta automáticamente del stock las cantidades de cada refacción incluida en esa orden. No es necesario hacerlo manualmente.</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('salesbook')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('suppliers')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Proveedores →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ SUPPLIERS ════════════════════════ -->
+      <div id="page-suppliers" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inventario</span><span>›</span><span class="text-gray-600 font-medium">Proveedores</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Proveedores</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Directorio de proveedores con saldo pendiente y condiciones de crédito.</p>
+
+        <h2 class="text-lg font-bold mb-4">Campos del proveedor</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Campo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>Nombre</td><td>Razón social o nombre comercial del proveedor</td></tr>
+            <tr><td>Contacto</td><td>Nombre de la persona de contacto</td></tr>
+            <tr><td>Teléfono / Email</td><td>Datos de comunicación</td></tr>
+            <tr><td>RFC</td><td>Para validar facturas recibidas</td></tr>
+            <tr><td>Días de crédito</td><td>Plazo de pago acordado (ej. 30 días)</td></tr>
+            <tr><td>Saldo pendiente</td><td>Monto total que se debe al proveedor actualmente. Se actualiza con abonos.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">El saldo del proveedor en el Dashboard</strong><br/><span class="text-sm text-green-700">El KPI "Deuda a proveedores" en el Dashboard es la suma del campo "Saldo pendiente" de todos los proveedores. Mantén este campo actualizado para que el indicador sea confiable.</span></div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('parts')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('purchase-orders')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Órdenes de compra →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ PURCHASE ORDERS ════════════════════════ -->
+      <div id="page-purchase-orders" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inventario</span><span>›</span><span class="text-gray-600 font-medium">Órdenes de compra</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Órdenes de compra</h1><span class="badge-available mt-2">Activo</span></div>
+        <p class="text-gray-500 mb-8">Gestiona las compras a proveedores: desde el pedido hasta la recepción de mercancía.</p>
+
+        <h2 class="text-lg font-bold mb-4">Flujo de una orden de compra</h2>
+        <div class="status-flow mb-8">
+          <span class="status-pill bg-gray-100 text-gray-600">Borrador</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-blue-100 text-blue-700">Enviada</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-amber-100 text-amber-700">Parc. recibida</span>
+          <span class="text-gray-400">→</span>
+          <span class="status-pill bg-emerald-100 text-emerald-700">Recibida</span>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4">Crear una orden de compra</h2>
+        <div class="step-item"><div class="step-num">1</div><div>Ve a <strong>Órdenes de compra</strong> → <span class="bg-brand/10 text-brand text-xs font-semibold px-2 py-1 rounded">+ Nueva OC</span>.</div></div>
+        <div class="step-item"><div class="step-num">2</div><div>Selecciona el <strong>proveedor</strong>. Los datos de contacto se cargan automáticamente.</div></div>
+        <div class="step-item"><div class="step-num">3</div><div>Agrega las <strong>partidas</strong>: busca repuestos del catálogo, especifica cantidad y costo unitario.</div></div>
+        <div class="step-item"><div class="step-num">4</div><div>El sistema calcula el <strong>subtotal + IVA 16% = total</strong> automáticamente.</div></div>
+        <div class="step-item"><div class="step-num">5</div><div>Guarda como <strong>Borrador</strong> o cambia el estado a <strong>Enviada</strong> cuando ya se mandó al proveedor.</div></div>
+        <div class="step-item"><div class="step-num">6</div><div>Cuando llegue la mercancía, registra las unidades <strong>recibidas</strong> por partida. Si no llegó todo, el estado queda en "Parc. recibida".</div></div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('suppliers')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('credits')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Abonos →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ CREDITS ════════════════════════ -->
+      <div id="page-credits" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Inventario</span><span>›</span><span class="text-gray-600 font-medium">Abonos</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Abonos a proveedores</h1><span class="badge-partial mt-2">Parcial</span></div>
+        <p class="text-gray-500 mb-8">Registra los pagos parciales o totales realizados a proveedores por órdenes de compra.</p>
+
+        <h2 class="text-lg font-bold mb-4">¿Qué es un abono?</h2>
+        <p class="text-sm text-gray-600 mb-4">Un abono reduce el saldo pendiente con un proveedor. Cada abono está ligado a una orden de compra específica y registra el monto, método de pago y fecha del pago.</p>
+
+        <h2 class="text-lg font-bold mb-4">Campos del abono</h2>
+        <table class="doc-table mb-6">
+          <thead><tr><th>Campo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>Orden de compra</td><td>La OC que se está pagando</td></tr>
+            <tr><td>Proveedor</td><td>Se hereda de la orden de compra</td></tr>
+            <tr><td>Monto</td><td>Cantidad abonada en MXN</td></tr>
+            <tr><td>Método de pago</td><td>Efectivo, Transferencia, Cheque o Tarjeta</td></tr>
+            <tr><td>Referencia</td><td>Número de transferencia o cheque (opcional)</td></tr>
+            <tr><td>Fecha</td><td>Fecha en que se realizó el pago</td></tr>
+          </tbody>
+        </table>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('purchase-orders')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('settings')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Siguiente: Configuración →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ SETTINGS ════════════════════════ -->
+      <div id="page-settings" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Sistema</span><span>›</span><span class="text-gray-600 font-medium">Configuración</span></div>
+        <div class="flex items-start justify-between mb-3"><h1 class="text-3xl font-extrabold text-gray-900">Configuración</h1><span class="badge-soon mt-2">Próximamente</span></div>
+        <p class="text-gray-500 mb-8">Ajustes del sistema, usuarios, empresa e integraciones.</p>
+        <div class="callout info"><span class="text-xl">🔜</span><div><strong class="text-blue-800">En desarrollo</strong><br/><span class="text-sm text-blue-700">El módulo de configuración estará disponible en la versión 2.0 del sistema.</span></div></div>
+
+        <h2 class="text-lg font-bold mb-4 mt-6">Funciones previstas</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">👤 Usuarios y roles</div><div class="text-xs text-gray-500">Crear usuarios, asignar roles (admin / mecánico / recepcionista) y gestionar contraseñas.</div></div>
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🏢 Datos de la empresa</div><div class="text-xs text-gray-500">Nombre, logo, dirección fiscal, teléfono y datos que aparecen en documentos impresos.</div></div>
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🧾 Integración CFDI</div><div class="text-xs text-gray-500">Configuración del PAC (Proveedor Autorizado de Certificación), certificado CSD y serie/folio de facturas.</div></div>
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🔔 Notificaciones</div><div class="text-xs text-gray-500">Alertas por email / WhatsApp para stock bajo, citas próximas y órdenes sin atender.</div></div>
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🏬 Multi-sucursal</div><div class="text-xs text-gray-500">Administrar varias sucursales con un mismo sistema. Reportes consolidados o por sucursal.</div></div>
+          <div class="bg-gray-50 border border-gray-100 rounded-xl p-4"><div class="font-semibold text-sm text-gray-800 mb-1">🔗 Integraciones</div><div class="text-xs text-gray-500">Conexión con WhatsApp Business API, sistemas contables y plataformas de cobro en línea.</div></div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+          <button onclick="navigate('credits')" class="border border-gray-200 text-gray-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-gray-50">← Anterior</button>
+          <button onclick="navigate('shortcuts')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">Ver atajos de teclado →</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════ SHORTCUTS ════════════════════════ -->
+      <div id="page-shortcuts" class="doc-page">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6"><span>Docs</span><span>›</span><span>Sistema</span><span>›</span><span class="text-gray-600 font-medium">Atajos de teclado</span></div>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-3">Atajos de teclado</h1>
+        <p class="text-gray-500 mb-8">Acciones frecuentes que puedes hacer sin usar el mouse.</p>
+
+        <h2 class="text-lg font-bold mb-4">Navegación</h2>
+        <table class="doc-table mb-8">
+          <thead><tr><th>Atajo</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>Abrir buscador global</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Cerrar modal / cancelar acción actual</td></tr>
+            <tr><td><kbd>Tab</kbd></td><td>Moverse al siguiente campo en formularios</td></tr>
+            <tr><td><kbd>Shift</kbd> + <kbd>Tab</kbd></td><td>Volver al campo anterior en formularios</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Formularios</h2>
+        <table class="doc-table mb-8">
+          <thead><tr><th>Atajo</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Enter</kbd></td><td>Confirmar/guardar formulario (si el botón está enfocado)</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>Guardar (en módulos con esta función habilitada)</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="text-lg font-bold mb-4">Navegador</h2>
+        <table class="doc-table mb-8">
+          <thead><tr><th>Atajo</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>R</kbd></td><td>Recargar la página (no pierde datos de formularios en proceso)</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>+</kbd> / <kbd>-</kbd></td><td>Aumentar / reducir zoom de la pantalla</td></tr>
+            <tr><td><kbd>F11</kbd></td><td>Pantalla completa (recomendado para recepciones)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip"><span class="text-xl">💡</span><div><strong class="text-green-800">Tip de productividad</strong><br/><span class="text-sm text-green-700">Para máxima productividad, trabaja con el sidebar colapsado (clic en ☰) cuando estés en formularios largos como presupuestos u órdenes. Ganarás espacio horizontal en la pantalla.</span></div></div>
+
+        <div class="mt-8">
+          <button onclick="navigate('intro')" class="bg-brand text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-brand-dark">← Volver al inicio</button>
+        </div>
+      </div>
+
+      <!-- Feedback widget (aparece en todas las páginas) -->
+      <div id="feedback-widget" class="mt-16 pt-8 border-t border-gray-100">
+        <p class="text-sm font-medium text-gray-700 mb-3">¿Fue útil esta página?</p>
+        <div class="flex gap-2">
+          <button onclick="sendFeedback(true)" id="fb-yes" class="flex items-center gap-1.5 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-all">👍 Sí, me ayudó</button>
+          <button onclick="sendFeedback(false)" id="fb-no" class="flex items-center gap-1.5 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all">👎 Necesita mejorar</button>
+        </div>
+        <p id="feedback-thanks" class="hidden text-sm text-green-600 font-medium mt-3">✓ ¡Gracias por tu comentario!</p>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Search results overlay -->
+<div id="search-overlay" class="hidden fixed inset-0 bg-black/30 z-50 flex items-start justify-center pt-20 px-4" onclick="closeSearch()">
+  <div onclick="event.stopPropagation()" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
+      <svg class="text-gray-400" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-overlay-input" oninput="filterSearch(this.value)" type="text" placeholder="Buscar..." class="flex-1 outline-none text-sm"/>
+      <kbd onclick="closeSearch()">Esc</kbd>
+    </div>
+    <div id="search-results" class="p-3 max-h-80 overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+  // ── Data index for search ──────────────────────────────────
+  const PAGES = [
+    { id:'intro', title:'Introducción', section:'Inicio', keywords:'bienvenida roles admin mecánico recepcionista que es tallerp' },
+    { id:'login', title:'Acceso al sistema', section:'Inicio', keywords:'iniciar sesión login contraseña cerrar sesión perfil' },
+    { id:'navigation', title:'Navegación y layout', section:'Inicio', keywords:'sidebar topbar navegación layout pantalla' },
+    { id:'dashboard', title:'Dashboard', section:'Atención al cliente', keywords:'kpi ingresos órdenes activas alertas gráficas métricas' },
+    { id:'orders', title:'Órdenes de trabajo', section:'Atención al cliente', keywords:'OT crear orden estado pendiente progreso completada cancelada técnico mecánico' },
+    { id:'appointments', title:'Citas', section:'Atención al cliente', keywords:'calendario cita agendar confirmada programada' },
+    { id:'quotes', title:'Presupuestos', section:'Atención al cliente', keywords:'cotización presupuesto COT convertir OT mano de obra refacciones diagnóstico' },
+    { id:'clients', title:'Clientes', section:'Atención al cliente', keywords:'cliente alta RFC facturación persona física empresa contacto' },
+    { id:'vehicles', title:'Vehículos', section:'Atención al cliente', keywords:'vehículo auto carro placa VIN marca modelo año checklist recepción' },
+    { id:'services', title:'Catálogo de servicios', section:'Atención al cliente', keywords:'servicio catálogo precio horas estimadas categoría activo' },
+    { id:'receipts', title:'Recibos de pago', section:'Finanzas', keywords:'recibo cobro pago efectivo tarjeta transferencia' },
+    { id:'invoices', title:'Facturas CFDI', section:'Finanzas', keywords:'factura CFDI SAT timbrar RFC régimen fiscal cancelar' },
+    { id:'payments', title:'Pagos', section:'Finanzas', keywords:'pago factura complemento parcialidades' },
+    { id:'commissions', title:'Comisiones', section:'Finanzas', keywords:'comisión técnico porcentaje mecánico' },
+    { id:'salesbook', title:'Libro de ventas', section:'Finanzas', keywords:'libro ventas reporte exportar contador Excel PDF' },
+    { id:'parts', title:'Repuestos', section:'Inventario', keywords:'repuesto refacción SKU stock mínimo precio costo almacén' },
+    { id:'suppliers', title:'Proveedores', section:'Inventario', keywords:'proveedor saldo crédito días contacto RFC' },
+    { id:'purchase-orders', title:'Órdenes de compra', section:'Inventario', keywords:'orden compra OC proveedor recepción mercancía' },
+    { id:'credits', title:'Abonos a proveedores', section:'Inventario', keywords:'abono pago proveedor transferencia cheque' },
+    { id:'settings', title:'Configuración', section:'Sistema', keywords:'configuración usuarios multi-sucursal integraciones WhatsApp notificaciones' },
+    { id:'shortcuts', title:'Atajos de teclado', section:'Sistema', keywords:'atajo teclado ctrl esc tab enter shortcut' },
+  ]
+
+  // ── Navigation ─────────────────────────────────────────────
+  function navigate(pageId) {
+    document.querySelectorAll('.doc-page').forEach(p => p.classList.remove('active'))
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'))
+    const page = document.getElementById('page-' + pageId)
+    if (page) { page.classList.add('active'); window.scrollTo({top:0, behavior:'smooth'}) }
+    const link = document.getElementById('nav-' + pageId)
+    if (link) link.classList.add('active')
+    document.getElementById('feedback-thanks').classList.add('hidden')
+    document.getElementById('fb-yes').disabled = false
+    document.getElementById('fb-no').disabled = false
+    closeSearch()
+    updateProgress(pageId)
+    // Update mobile sidebar link too
+    document.querySelectorAll('[data-page="' + pageId + '"]').forEach(l => l.classList.add('active'))
+  }
+
+  // ── Progress tracker ───────────────────────────────────────
+  const visited = new Set()
+  function updateProgress(pageId) {
+    visited.add(pageId)
+    const pct = Math.round((visited.size / PAGES.length) * 100)
+    document.getElementById('read-progress').style.width = pct + '%'
+  }
+  updateProgress('intro')
+
+  // ── Search ─────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openSearch() }
+    if (e.key === 'Escape') closeSearch()
+  })
+  function openSearch() {
+    document.getElementById('search-overlay').classList.remove('hidden')
+    setTimeout(() => document.getElementById('search-overlay-input').focus(), 50)
+    filterSearch('')
+  }
+  function closeSearch() {
+    document.getElementById('search-overlay').classList.add('hidden')
+  }
+  function searchDocs(q) {
+    if (q.length > 1) openSearch()
+    document.getElementById('search-overlay-input').value = q
+    filterSearch(q)
+  }
+  function filterSearch(q) {
+    const results = document.getElementById('search-results')
+    if (!q.trim()) {
+      results.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Escribe para buscar...</p>'
+      return
+    }
+    const matches = PAGES.filter(p =>
+      (p.title + ' ' + p.keywords + ' ' + p.section).toLowerCase().includes(q.toLowerCase())
+    )
+    if (!matches.length) {
+      results.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Sin resultados para "' + q + '"</p>'
+      return
+    }
+    results.innerHTML = matches.map(p => `
+      <button onclick="navigate('${p.id}')" class="w-full flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-left transition-colors">
+        <div class="mt-0.5 w-7 h-7 bg-brand/10 rounded-lg flex items-center justify-center shrink-0">
+          <svg width="12" height="12" fill="none" stroke="#F97316" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-gray-900">${p.title}</div>
+          <div class="text-xs text-gray-400">${p.section}</div>
+        </div>
+      </button>
+    `).join('')
+  }
+
+  // ── Mobile sidebar ─────────────────────────────────────────
+  function toggleMobileSidebar() {
+    const sidebar = document.getElementById('mobile-sidebar')
+    const overlay = document.getElementById('mobile-overlay')
+    // Clone desktop nav on first open
+    if (!document.getElementById('mobile-nav-content').innerHTML) {
+      document.getElementById('mobile-nav-content').innerHTML = document.querySelector('#sidebar .px-3').innerHTML
+      document.getElementById('mobile-nav-content').querySelectorAll('a[onclick]').forEach(a => {
+        const match = a.getAttribute('onclick').match(/navigate\('(.+?)'\)/)
+        if (match) a.setAttribute('data-page', match[1])
+      })
+    }
+    sidebar.classList.toggle('hidden')
+    overlay.classList.toggle('hidden')
+  }
+
+  // ── Feedback ───────────────────────────────────────────────
+  function sendFeedback(positive) {
+    document.getElementById('feedback-thanks').classList.remove('hidden')
+    document.getElementById('fb-yes').disabled = true
+    document.getElementById('fb-no').disabled = true
+  }
+
+  // ── Keyboard shortcut hint in search input ─────────────────
+  document.getElementById('search-input').addEventListener('focus', openSearch)
+</script>
+</body>
+</html>
